@@ -27,6 +27,7 @@ public class RandomLogsTest {
 	private static final String AUTHORIZATION_ARTIFACT = "authorization";
 	private static final String CLASS_ARTIFACT = "class";
 	private static final long N_LOGS = 100000;
+	private static final int N_MESSAGE = 10;
 	
 	@Autowired
 	RandomLogs randomLogs;
@@ -106,11 +107,14 @@ public class RandomLogsTest {
 	}
 	@Test
 	void sendRandomLogs() throws InterruptedException {
-		for (int i = 0; i < 10; i++) {
+		Set<String> messageStrSet = new HashSet<>();
+		for (int i = 0; i < N_MESSAGE; i++) {
 			byte[] messageBytes = output.receive().getPayload();
 			String messageStr = new String(messageBytes);
+			messageStrSet.add(messageStr);
 			System.out.println(messageStr);
-			Thread.sleep(1500);
+			Thread.sleep(1100);
 		}
+		assertEquals(N_MESSAGE, messageStrSet.size());
 	}
 }
