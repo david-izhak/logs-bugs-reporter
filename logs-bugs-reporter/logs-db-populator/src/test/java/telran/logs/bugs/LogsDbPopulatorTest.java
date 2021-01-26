@@ -23,6 +23,5 @@ InputDestination input;
 		input.send(new GenericMessage<LogDto>
 		(new LogDto(new Date(), LogType.NO_EXCEPTION, "artifact", 20, "result")));
 		//TODO testing of saving LogDto into MongoDB
-		
 	}
 }
