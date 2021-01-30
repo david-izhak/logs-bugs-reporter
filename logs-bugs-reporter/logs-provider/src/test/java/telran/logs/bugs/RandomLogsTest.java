@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,10 +19,12 @@ import org.springframework.cloud.stream.binder.test.TestChannelBinderConfigurati
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 
+import lombok.extern.slf4j.Slf4j;
 import telran.logs.bugs.dto.*;
 
 @SpringBootTest
 @Import(TestChannelBinderConfiguration.class)
+@Slf4j
 public class RandomLogsTest {
 
 	@Value("${app-AUTHENTICATION_ARTIFACT}")
@@ -44,8 +44,6 @@ public class RandomLogsTest {
 	@Autowired
 	OutputDestination output;
 	
-	static Logger LOG = LoggerFactory.getLogger(RandomLogsTest.class);
-
 	@Test
 	void logTypeArtifactTest() throws Exception {
 		EnumMap<LogType, String> logTypeArtifactsMap = getMapForTest();
@@ -86,12 +84,12 @@ public class RandomLogsTest {
 		testLogContent(logs);
 		Map<LogType, Long> logTypeOccurrences = logs.stream()
 				.collect(Collectors.groupingBy(l -> l.logType, Collectors.counting()));
-		LOG.info("Statistic **********************************");
+		log.info("Statistic **********************************");
 		logTypeOccurrences.forEach((k, v) -> {
 			String str = String.format("LogType: %s. Count: %d", k, v);
-			LOG.info(str);
+			log.info(str);
 		});
-		LOG.info("**********************************");
+		log.info("**********************************");
 	}
 
 	private void testLogContent(List<LogDto> logs) {
@@ -132,7 +130,7 @@ public class RandomLogsTest {
 			byte[] messageBytes = recivedMessage.getPayload();
 			String messageStr = new String(messageBytes);
 			messageStrSet.add(messageStr);
-			LOG.info(messageStr);
+			log.info(messageStr);
  		}
 		assertEquals(N_LOGS_SENT, messageStrSet.size());
 	}
