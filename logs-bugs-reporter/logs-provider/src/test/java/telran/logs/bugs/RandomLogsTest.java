@@ -127,8 +127,7 @@ public class RandomLogsTest {
 		for (int i = 0; i < N_LOGS_SENT; i++) {
 			Message<byte[]> recivedMessage = null;
 			while (recivedMessage == null) {
-				recivedMessage = output.receive();
-				Thread.sleep(100);
+				recivedMessage = output.receive(Long.MAX_VALUE);
 			}
 			byte[] messageBytes = recivedMessage.getPayload();
 			String messageStr = new String(messageBytes);
