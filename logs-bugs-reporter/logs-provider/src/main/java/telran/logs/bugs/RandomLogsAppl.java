@@ -20,7 +20,7 @@ public class RandomLogsAppl {
 	}
 
 	@Bean
-	Supplier<LogDto> random_logs_provider() {
+	Supplier<LogDto> randomLogsProvider() {
 		return randomLogs::createRandomLog;
 	}
 }

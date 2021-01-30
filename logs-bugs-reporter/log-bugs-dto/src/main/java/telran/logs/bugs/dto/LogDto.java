@@ -12,7 +12,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class LogDto {
-	public LogDto(@NotNull Date dateTime, @NotNull LogType logType, @NotEmpty String artifact, int responseTime,
+	public LogDto(@NotNull Date dateTime, @NotNull LogType logType, @NotEmpty String artifact, int responseTime,  // TODO установить на responseTime минимальное значение времени, чтобы исключить случаи отрицательного значения и 0
 			String result) {
 		this.dateTime = dateTime;
 		this.logType = logType;

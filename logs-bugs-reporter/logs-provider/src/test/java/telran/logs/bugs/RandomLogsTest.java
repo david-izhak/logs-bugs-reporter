@@ -10,31 +10,42 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.annotation.Import;
+import org.springframework.messaging.Message;
 
 import telran.logs.bugs.dto.*;
 
 @SpringBootTest
 @Import(TestChannelBinderConfiguration.class)
 public class RandomLogsTest {
-	
-	private static final String AUTHENTICATION_ARTIFACT = "authentication";
-	private static final String AUTHORIZATION_ARTIFACT = "authorization";
-	private static final String CLASS_ARTIFACT = "class";
-	private static final long N_LOGS = 100000;
-	private static final int N_MESSAGE = 10;
-	
+
+	@Value("${app-AUTHENTICATION_ARTIFACT}")
+	private String AUTHENTICATION_ARTIFACT;
+	@Value("${app-AUTHORIZATION_ARTIFACT}")
+	private String AUTHORIZATION_ARTIFACT;
+	@Value("${app-CLASS_ARTIFACT}")
+	private String CLASS_ARTIFACT;
+	@Value("${app-N_LOGS}")
+	private long N_LOGS;
+	@Value("${app-N_LOGS_SENT}")
+	private int N_LOGS_SENT;
+
 	@Autowired
 	RandomLogs randomLogs;
-	
+
 	@Autowired
 	OutputDestination output;
 	
+	static Logger LOG = LoggerFactory.getLogger(RandomLogsTest.class);
+
 	@Test
 	void logTypeArtifactTest() throws Exception {
 		EnumMap<LogType, String> logTypeArtifactsMap = getMapForTest();
@@ -47,36 +58,40 @@ public class RandomLogsTest {
 				assertEquals(AUTHORIZATION_ARTIFACT, v);
 				break;
 			default:
-				assertEquals(CLASS_ARTIFACT, v);
+				testClassArtifact(v);
 			}
 		});
 	}
 
+	private void testClassArtifact(String artifact) {
+		assertEquals(CLASS_ARTIFACT, artifact.substring(0, 5));
+		int classNumber = Integer.parseInt(artifact.substring(5));
+		assertTrue(classNumber >= 1 && classNumber <= randomLogs.nClasses);
+	}
+
 	private EnumMap<LogType, String> getMapForTest()
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		Method getMapMethod = randomLogs.getClass()
-				.getDeclaredMethod("getLogArtifactMap");
+		Method getMapMethod = randomLogs.getClass().getDeclaredMethod("getLogArtifactMap");
 		getMapMethod.setAccessible(true);
 		@SuppressWarnings("unchecked")
-		EnumMap<LogType, String> logTypeArtifactsMap =
-				(EnumMap<LogType, String>) getMapMethod.invoke(randomLogs);
+		EnumMap<LogType, String> logTypeArtifactsMap = (EnumMap<LogType, String>) getMapMethod.invoke(randomLogs);
 		return logTypeArtifactsMap;
 	}
-	
+
 	@DisplayName("Show count of each LogType after random generation")
 	@Test
-	void generation() throws Exception{
-		List<LogDto> logs =Stream
-				.generate(() -> randomLogs.createRandomLog()).limit(N_LOGS)
+	void generation() throws Exception {
+		List<LogDto> logs = Stream.generate(() -> randomLogs.createRandomLog()).limit(N_LOGS)
 				.collect(Collectors.toList());
 		testLogContent(logs);
-		Map<LogType, Long> logTypeOccurrences = 
-				logs.stream().collect(Collectors.groupingBy(l -> l.logType, Collectors.counting()));
-		System.out.println("Statistic **********************************");
+		Map<LogType, Long> logTypeOccurrences = logs.stream()
+				.collect(Collectors.groupingBy(l -> l.logType, Collectors.counting()));
+		LOG.info("Statistic **********************************");
 		logTypeOccurrences.forEach((k, v) -> {
-			System.out.printf("LogType: %s. Count: %d \n", k, v);
+			String str = String.format("LogType: %s. Count: %d", k, v);
+			LOG.info(str);
 		});
-		System.out.println("**********************************");
+		LOG.info("**********************************");
 	}
 
 	private void testLogContent(List<LogDto> logs) {
@@ -93,28 +108,33 @@ public class RandomLogsTest {
 				assertTrue(log.result.isEmpty());
 				break;
 			case NO_EXCEPTION:
-				assertEquals(CLASS_ARTIFACT, log.artifact);
+				testClassArtifact(log.artifact);
 				assertTrue(log.responseTime > 0);
 				assertTrue(log.result.isEmpty());
 				break;
 			default:
-				assertEquals(CLASS_ARTIFACT, log.artifact);
+				testClassArtifact(log.artifact);
 				assertEquals(0, log.responseTime);
 				assertTrue(log.result.isEmpty());
 				break;
 			}
 		});
 	}
+
 	@Test
 	void sendRandomLogs() throws InterruptedException {
 		Set<String> messageStrSet = new HashSet<>();
-		for (int i = 0; i < N_MESSAGE; i++) {
-			byte[] messageBytes = output.receive().getPayload();
+		for (int i = 0; i < N_LOGS_SENT; i++) {
+			Message<byte[]> recivedMessage = null;
+			while (recivedMessage == null) {
+				recivedMessage = output.receive();
+				Thread.sleep(100);
+			}
+			byte[] messageBytes = recivedMessage.getPayload();
 			String messageStr = new String(messageBytes);
 			messageStrSet.add(messageStr);
-			System.out.println(messageStr);
-			Thread.sleep(1100);
-		}
-		assertEquals(N_MESSAGE, messageStrSet.size());
+			LOG.info(messageStr);
+ 		}
+		assertEquals(N_LOGS_SENT, messageStrSet.size());
 	}
 }

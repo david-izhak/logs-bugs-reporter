@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-// @ExtendWith(SpringExtension.class)
-// @AutoConfigureMockMvc
 @WebMvcTest(LogDtoTest.TestController.class) // what classes are tested
 @ContextConfiguration(classes = LogDtoTest.TestController.class) // what classes will be in AC
 public class LogDtoTest {
