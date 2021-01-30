@@ -35,6 +35,7 @@ public class LogsDbPopulatorAppl {
 	StreamBridge streamBridge; // Что за класс? Где он описан? В чём его функциональность?
 
 	public static void main(String[] args) {
+		log.info("Start LogsDbPopulatorAppl");
 		SpringApplication.run(LogsDbPopulatorAppl.class, args);
 	}
 
