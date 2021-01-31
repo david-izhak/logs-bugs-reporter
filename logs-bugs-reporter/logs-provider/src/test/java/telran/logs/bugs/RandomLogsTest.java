@@ -93,27 +93,27 @@ public class RandomLogsTest {
 	}
 
 	private void testLogContent(List<LogDto> logs) {
-		logs.forEach(log -> {
-			switch (log.logType) {
+		logs.forEach(logFromList -> {
+			switch (logFromList.logType) {
 			case AUTHENTICATION_EXCEPTION:
-				assertEquals(AUTHENTICATION_ARTIFACT, log.artifact);
-				assertEquals(0, log.responseTime);
-				assertTrue(log.result.isEmpty());
+				assertEquals(AUTHENTICATION_ARTIFACT, logFromList.artifact);
+				assertEquals(0, logFromList.responseTime);
+				assertTrue(logFromList.result.isEmpty());
 				break;
 			case AUTHORIZATION_EXCEPTION:
-				assertEquals(AUTHORIZATION_ARTIFACT, log.artifact);
-				assertEquals(0, log.responseTime);
-				assertTrue(log.result.isEmpty());
+				assertEquals(AUTHORIZATION_ARTIFACT, logFromList.artifact);
+				assertEquals(0, logFromList.responseTime);
+				assertTrue(logFromList.result.isEmpty());
 				break;
 			case NO_EXCEPTION:
-				testClassArtifact(log.artifact);
-				assertTrue(log.responseTime > 0);
-				assertTrue(log.result.isEmpty());
+				testClassArtifact(logFromList.artifact);
+				assertTrue(logFromList.responseTime > 0);
+				assertTrue(logFromList.result.isEmpty());
 				break;
 			default:
-				testClassArtifact(log.artifact);
-				assertEquals(0, log.responseTime);
-				assertTrue(log.result.isEmpty());
+				testClassArtifact(logFromList.artifact);
+				assertEquals(0, logFromList.responseTime);
+				assertTrue(logFromList.result.isEmpty());
 				break;
 			}
 		});
