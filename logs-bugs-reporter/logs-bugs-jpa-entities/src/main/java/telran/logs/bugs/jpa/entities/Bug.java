@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @Table(name = "bugs")
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Getter
 public class Bug {
 
@@ -29,29 +28,29 @@ public class Bug {
 	long id;
 
 	@Column(nullable = false)
-	@NonNull String description;
+	String description;
 
 	@Column(name = "date_open", nullable = false)
-	@NonNull LocalDate dateOpen;
+	LocalDate dateOpen;
 
 	@Column(name = "date_close", nullable = true)
-	@NonNull LocalDate dateClose;
+	LocalDate dateClose;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	@NonNull BugStatus status;
+	BugStatus status;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	@NonNull Seriousness seriousness;
+	Seriousness seriousness;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "openning_method", nullable = false)
-	@NonNull OpenningMethod openningMethod;
+	OpenningMethod openningMethod;
 	
 	@ManyToOne
 	@JoinColumn(name = "programmer_id", nullable = true)
-	@NonNull Programmer programmer;
+	Programmer programmer;
 
 	@Override
 	public int hashCode() {
@@ -103,5 +102,17 @@ public class Bug {
 		if (status != other.status)
 			return false;
 		return true;
+	}
+
+	public Bug(String description, LocalDate dateOpen, LocalDate dateClose, BugStatus status, Seriousness seriousness,
+			OpenningMethod openningMethod, Programmer programmer) {
+		super();
+		this.description = description;
+		this.dateOpen = dateOpen;
+		this.dateClose = dateClose;
+		this.status = status;
+		this.seriousness = seriousness;
+		this.openningMethod = openningMethod;
+		this.programmer = programmer;
 	}
 }
