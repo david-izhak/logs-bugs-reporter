@@ -58,7 +58,7 @@ public class OpenningBugsTest {
 		Artifact artifactExp = new Artifact("bug1", programmer);
 		List<Artifact> artifactList = artifacts.findAll();
 		assertEquals(1, artifactList.size());
-		//assertEquals(artifactExp, artifactList.get(0));
+		assertEquals(artifactExp, artifactList.get(0));
 	}
 	
 	@Test
@@ -71,7 +71,7 @@ public class OpenningBugsTest {
 		assertNotNull(bugsList.get(0).getDateOpen());
 		assertEquals(null, bugsList.get(0).getDateClose());
 		assertEquals(OpenningMethod.AUTOMATIC, bugsList.get(0).getOpenningMethod());
-		//assertEquals(BugStatus.ASSIGNED, bugsList.get(0).getStatus());
+		assertEquals(BugStatus.ASSIGNED, bugsList.get(0).getStatus());
 		assertEquals(Seriousness.BLOCKING, bugsList.get(0).getSeriousness());
 		
 	}

@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import telran.logs.bugs.dto.LogDto;
 import telran.logs.bugs.dto.LogType;
 import telran.logs.bugs.jpa.entities.Artifact;
@@ -25,6 +26,7 @@ import telran.logs.bugs.jpa.entities.Seriousness;
 
 @SpringBootApplication
 @EntityScan("telran.logs.bugs.jpa.entities")
+@Slf4j
 public class BugsOpenningAppl {
 	
 	@Autowired
@@ -50,13 +52,17 @@ public class BugsOpenningAppl {
 		//// LogDto теоретически может содержать тип NO_EXCEPTION. Как реагировать на такую ситуацию? Сследует ли бросать Exception?
 		Programmer programmer = getProgrammer(logDto.artifact);
 		Bug bug = new Bug((logDto.logType + " " + logDto.result), LocalDate.now(), null, getBugStatus(programmer), getSeriousness(logDto.logType), OpenningMethod.AUTOMATIC, programmer);
+		log.debug(">>>> created bug {}", bug.toString());
 		bugs.save(bug);
+		log.debug(">>>> bug {} saved to repo", bug.toString());
 	}
 
 	private @NonNull BugStatus getBugStatus(Programmer programmer) {
 		if(programmer != null) {
+			log.debug(">>>> return BugStatus.ASSIGNED");
 			return BugStatus.ASSIGNED;
 		}
+		log.debug(">>>> return BugStatus.OPENND");
 		return BugStatus.OPENND;
 	}
 
@@ -76,10 +82,12 @@ public class BugsOpenningAppl {
 	private @NonNull Programmer getProgrammer(@NotEmpty String artifact) {
 		List<Artifact> artifactList = artifacts.findAll();
 		for(Artifact artifactEntity: artifactList) {
-			if(artifactEntity.getArtifacId().equals(artifact)) {
+			if(artifactEntity.getArtifacId().equalsIgnoreCase(artifact)) {
+				log.debug(">>>> return Programmer");
 				return artifactEntity.getProgrammer();
 			}
 		}
+		log.debug(">>>> No Programmer, return null");
 		return null;
 	}
 }

@@ -14,13 +14,13 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "bugs")
 @NoArgsConstructor
 @Getter
+@ToString
 public class Bug {
 
 	@Id
