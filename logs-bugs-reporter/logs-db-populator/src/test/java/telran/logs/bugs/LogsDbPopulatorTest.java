@@ -7,11 +7,11 @@ import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.stream.binder.test.InputDestination;
+import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.support.GenericMessage;
@@ -23,15 +23,19 @@ import telran.logs.bugs.mongo.doc.LogDoc;
 @SpringBootTest
 @Import(TestChannelBinderConfiguration.class)
 public class LogsDbPopulatorTest {
+	
+	@Value("${app-binding-name:exceptions-out-0}")
+	String bindingName;
 
 	@Autowired
 	InputDestination input;
+	
+	@Autowired
+	OutputDestination output;
 
 	@Autowired
 	LogsRepoPopulator logs;
 	
-	static Logger LOG = LoggerFactory.getLogger(LogsDbPopulatorAppl.class);
-
 	@BeforeEach
 	void setUp() {
 		logs.deleteAll();
@@ -73,7 +77,7 @@ public class LogsDbPopulatorTest {
 		sendLog(logDtoWithValidationViolation);
 		assertEquals(1, logs.findAll().size());
 		assertEquals(LogType.BAD_REQUEST_EXCEPTION, logs.findAll().get(0).getLogDto().logType);
-		assertEquals(LogsDbPopulatorAppl.class.toString(), logs.findAll().get(0).getLogDto().artifact);
+		assertEquals(LogsDbPopulatorAppl.class.getName(), logs.findAll().get(0).getLogDto().artifact);
 		assertEquals(0, logs.findAll().get(0).getLogDto().responseTime);
 		assertTrue(logs.findAll().get(0).getLogDto().result.contains("ConstraintViolationImpl"));
 	}

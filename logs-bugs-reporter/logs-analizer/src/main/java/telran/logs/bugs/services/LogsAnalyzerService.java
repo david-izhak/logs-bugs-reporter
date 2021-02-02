@@ -24,14 +24,15 @@ public class LogsAnalyzerService {
 	
 	@Bean
 	Consumer<LogDto> getAnalyzerBean(){
+		log.debug("Start creating of the consumer log {}", LogDto.class.getName());
 		return this::analyzerMethod;
 	}
 	
 	private void analyzerMethod(LogDto logDto){
-		log.debug("# DEBUG # recieved log {}", logDto);
+		log.debug("recieved log {}", logDto);
 		if(logDto.logType != null && logDto.logType != LogType.NO_EXCEPTION) {
 			streamBridge.send(bindingName, logDto);
-			log.warn("* WARN * recieved log with LogType of exception {}", logDto.logType);
+			log.warn("Recieved log with LogType of exception {}, and sended thru streamBridge", logDto.logType);
 		}
 	}
 }

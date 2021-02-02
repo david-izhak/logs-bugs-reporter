@@ -14,17 +14,23 @@ import telran.logs.bugs.dto.LogType;
 @NoArgsConstructor
 public class RandomLogs {
 
-	@Value("${app-count-classes}")
+	@Value("${app-count-classes:20}")
 	int nClasses;
-	
-	@Value("${app-secExceptionProb}")
+
+	@Value("${app-secExceptionProb:30}")
 	int secExceptionProb;
-	
-	@Value("${app-exceptionProb}")
+
+	@Value("${app-exceptionProb:10}")
 	int exceptionProb;
-	
-	@Value("${app-authenticationProb}")
+
+	@Value("${app-authenticationProb:70}")
 	int authenticationProb;
+
+	@Value("${app-min-response-time:20}")
+	int minResponseTime;
+
+	@Value("${app-max-response-time:200}")
+	int maxResponseTime;
 
 	public LogDto createRandomLog() {
 		LogType logType = getLogType();
@@ -32,7 +38,8 @@ public class RandomLogs {
 	}
 
 	private int getResponseTime(LogType logType) {
-		return logType == LogType.NO_EXCEPTION ? ThreadLocalRandom.current().nextInt(20, 200) : 0;
+		return logType == LogType.NO_EXCEPTION ? ThreadLocalRandom.current().nextInt(minResponseTime, maxResponseTime)
+				: 0;
 	}
 
 	private String getArtifact(LogType logType) {

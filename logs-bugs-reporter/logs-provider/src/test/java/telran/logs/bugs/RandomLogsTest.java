@@ -27,15 +27,15 @@ import telran.logs.bugs.dto.*;
 @Slf4j
 public class RandomLogsTest {
 
-	@Value("${app-AUTHENTICATION_ARTIFACT}")
+	@Value("${app-AUTHENTICATION_ARTIFACT:authentication}")
 	private String AUTHENTICATION_ARTIFACT;
-	@Value("${app-AUTHORIZATION_ARTIFACT}")
+	@Value("${app-AUTHORIZATION_ARTIFACT:authorization}")
 	private String AUTHORIZATION_ARTIFACT;
-	@Value("${app-CLASS_ARTIFACT}")
+	@Value("${app-CLASS_ARTIFACT:class}")
 	private String CLASS_ARTIFACT;
-	@Value("${app-N_LOGS}")
+	@Value("${app-N_LOGS:100000}")
 	private long N_LOGS;
-	@Value("${app-N_LOGS_SENT}")
+	@Value("${app-N_LOGS_SENT:10}")
 	private int N_LOGS_SENT;
 
 	@Autowired
@@ -130,7 +130,7 @@ public class RandomLogsTest {
 			byte[] messageBytes = recivedMessage.getPayload();
 			String messageStr = new String(messageBytes);
 			messageStrSet.add(messageStr);
-			log.info(messageStr);
+			log.debug("received in test: {}", messageStr);
  		}
 		assertEquals(N_LOGS_SENT, messageStrSet.size());
 	}
