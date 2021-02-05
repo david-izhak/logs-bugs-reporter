@@ -1,6 +1,6 @@
-delete from artifacts;
 delete from bugs;
-delete from prigrammer;
+delete from artifacts;
+delete from programmer;
 
-insert into prigrammer values(1, 'Moshe');
-insert into artifacts values('bag1', 1);
+insert into programmer values(1, 'Moshe');
+insert into artifacts values('bug1', 1);

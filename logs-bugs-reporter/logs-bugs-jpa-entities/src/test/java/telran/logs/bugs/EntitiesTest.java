@@ -9,20 +9,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import telran.logs.bugs.jpa.entities.Artifact;
 import telran.logs.bugs.jpa.entities.Bug;
 import telran.logs.bugs.jpa.entities.BugStatus;
-import telran.logs.bugs.jpa.entities.OpenningMethod;
+import telran.logs.bugs.jpa.entities.OpeningMethod;
 import telran.logs.bugs.jpa.entities.Programmer;
 import telran.logs.bugs.jpa.entities.Seriousness;
 
 @ExtendWith(SpringExtension.class)
 @EnableAutoConfiguration
 @ContextConfiguration(classes = { ProgrammersRepo.class, ArtifactsRepo.class, BugsRepo.class })
-public class EntitiesTest {
+class EntitiesTest {
 
 	@Autowired
 	ProgrammersRepo programmers;
@@ -39,13 +40,99 @@ public class EntitiesTest {
 		programmers.save(programmer);
 		Artifact artifact = new Artifact("authentication", programmer);
 		artifacts.save(artifact);
-		Bug bug = new Bug("description", LocalDate.now(), LocalDate.now(), BugStatus.ASSIGNED, Seriousness.MINOR, OpenningMethod.AUTOMATIC, programmer);
+		Bug bug = Bug.builder()
+				.description("description")
+				.dateOpen(LocalDate.now())
+				.dateClose(LocalDate.now())
+				.status(BugStatus.ASSIGNED)
+				.seriousness(Seriousness.MINOR)
+				.openningMethod(OpeningMethod.AUTOMATIC)
+				.programmer(programmer).build();
 		bugs.save(bug);
-		
+
 		List<Bug> bugsRes = bugs.findAll();
-		
+
 		assertEquals(1, bugsRes.size());
 		assertEquals(bug, bugsRes.get(0));
 	}
 
+	@Test
+	void bugCreationNullDescriptionTest() {
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			Bug bug = Bug.builder()
+				.description(null)
+				.dateOpen(LocalDate.now())
+				.dateClose(LocalDate.now())
+				.status(BugStatus.ASSIGNED)
+				.seriousness(Seriousness.MINOR)
+				.openningMethod(OpeningMethod.AUTOMATIC)
+				.programmer(new Programmer(123, "Moshe"))
+				.build();
+			bugs.save(bug);
+		});
+	}
+
+	@Test
+	void bugCreationNullDateOpenTest() {
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			Bug bug = Bug.builder()
+					.description("description")
+					.dateOpen(null)
+					.dateClose(LocalDate.now())
+					.status(BugStatus.ASSIGNED)
+					.seriousness(Seriousness.MINOR)
+					.openningMethod(OpeningMethod.AUTOMATIC)
+					.programmer(new Programmer(123, "Moshe"))
+					.build();
+			bugs.save(bug);
+		});
+	}
+
+	@Test
+	void bugCreationNullSeriousnessTest() {
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			Bug bug = Bug.builder()
+					.description("description")
+					.dateOpen(LocalDate.now())
+					.dateClose(LocalDate.now())
+					.status(null)
+					.seriousness(Seriousness.MINOR)
+					.openningMethod(OpeningMethod.AUTOMATIC)
+					.programmer(new Programmer(123, "Moshe"))
+					.build();
+			bugs.save(bug);
+		});
+	}
+	
+	@Test
+	void bugCreationNullBugStatusTest() {
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			Bug bug = Bug.builder()
+					.description("description")
+					.dateOpen(LocalDate.now())
+					.dateClose(LocalDate.now())
+					.status(BugStatus.ASSIGNED)
+					.seriousness(null)
+					.openningMethod(OpeningMethod.AUTOMATIC)
+					.programmer(new Programmer(123, "Moshe"))
+					.build();
+			bugs.save(bug);
+		});
+	}
+	
+	@Test
+	void bugCreationNullOpenningMethodTest() {
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			Bug bug = Bug.builder()
+					.description("description")
+					.dateOpen(LocalDate.now())
+					.dateClose(LocalDate.now())
+					.status(BugStatus.ASSIGNED)
+					.seriousness(Seriousness.MINOR)
+					.openningMethod(null)
+					.programmer(new Programmer(123, "Moshe"))
+					.build();
+			bugs.save(bug);
+		});
+	}
 }

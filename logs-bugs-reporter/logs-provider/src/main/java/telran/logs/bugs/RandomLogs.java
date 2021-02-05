@@ -49,9 +49,7 @@ public class RandomLogs {
 
 	private EnumMap<LogType, String> getLogArtifactMap() {
 		EnumMap<LogType, String> res = new EnumMap<>(LogType.class);
-		Arrays.asList(LogType.values()).forEach(lt -> {
-			fillLogTypeArtifactMap(res, lt);
-		});
+		Arrays.asList(LogType.values()).forEach(lt -> fillLogTypeArtifactMap(res, lt));
 		return res;
 	}
 

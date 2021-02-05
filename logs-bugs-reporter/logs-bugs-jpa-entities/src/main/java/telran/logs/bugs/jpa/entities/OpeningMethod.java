@@ -1,5 +1,5 @@
 package telran.logs.bugs.jpa.entities;
 
-public enum OpenningMethod {
+public enum OpeningMethod {
 	MANUAL, AUTOMATIC
 }
