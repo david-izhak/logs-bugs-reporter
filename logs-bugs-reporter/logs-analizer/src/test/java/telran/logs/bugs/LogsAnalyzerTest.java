@@ -34,11 +34,11 @@ public class LogsAnalyzerTest {
 	@Value("${app-binding-name}")
 	String bindinName;
 	
-	@BeforeEach
-	void setup() {
-		consumer.clear();
-		log.debug("test::: Consumer was cleared before test (BeforeEach)");
-	}
+//	@BeforeEach
+//	void setup() {
+//		consumer.clear();
+//		log.debug("test::: Consumer was cleared before test (BeforeEach)");
+//	}
 	
 	@Test
 	void analyzerTestNonException() {
