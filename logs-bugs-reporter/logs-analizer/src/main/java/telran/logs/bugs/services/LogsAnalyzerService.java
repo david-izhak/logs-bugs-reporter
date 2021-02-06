@@ -49,10 +49,12 @@ public class LogsAnalyzerService {
 	}
 
 	private LogDto analyzeLogDtoViolations(LogDto logDto) {
-		Set<ConstraintViolation<LogDto>> violations = validator.validate(logDto);
+		log.debug(">>>> Start validation {}", logDto);
 		LogDto[] logDtoArray = {logDto};
+		Set<ConstraintViolation<LogDto>> violations = validator.validate(logDto);
 		if (!violations.isEmpty()) {
-			violations.forEach(cv -> log.error(">>>> logDto : {}; field: {}; message: {}",logDto,
+			log.debug(">>>> Founded violation");
+			violations.forEach(cv -> log.error(">>>> logDto with violation : {}; field: {}; message: {}",logDto,
 					cv.getPropertyPath(), cv.getMessage()));
 			logDtoArray[0] = new LogDto(new Date(),
 					LogType.BAD_REQUEST_EXCEPTION, LogsAnalyzerService.class.getName(), 0, violations.toString());

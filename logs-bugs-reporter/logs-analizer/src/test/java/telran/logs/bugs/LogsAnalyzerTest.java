@@ -60,11 +60,11 @@ public class LogsAnalyzerTest {
 		log.debug("test::: recieved in consumer {}", new String(messag.getPayload()));
 	}
 	
-	
 
 	@Test
 	void logDtoValidationViolationDateTest() {
 		LogDto logDtoDateValidationViolation = new LogDto(null, LogType.NO_EXCEPTION, "artifact", 20, "result");
+		log.debug("test::: Created logDto (with violation) {}", "Date");
 		executeTestWithValidationViolation(logDtoDateValidationViolation);
 	}
 
