@@ -39,28 +39,25 @@ public class LogsAnalyzerService {
 		return this::analyzerMethod;
 	}
 	
-	private void analyzerMethod(LogDto logDto){
-		log.debug(">>>> recieved log {}", logDto);
-		boolean isValidationViolationsInLogDto = analyzeLogDtoViolations(logDto);
-		if(!isValidationViolationsInLogDto && logDto.logType != null && logDto.logType != LogType.NO_EXCEPTION) {
+	private void analyzerMethod(LogDto logDtoIn){
+		log.debug(">>>> recieved log {}", logDtoIn);
+		LogDto logDto = analyzeLogDtoViolations(logDtoIn);
+		if(logDto.logType != null && logDto.logType != LogType.NO_EXCEPTION) {
 			streamBridge.send(bindingName, logDto);
 			log.warn(">>>> Recieved log with LogType of exception {}, and sended thru streamBridge", logDto.logType);
 		}
 	}
 
-	private boolean analyzeLogDtoViolations(LogDto logDto) {
-		boolean isViolations = false;
+	private LogDto analyzeLogDtoViolations(LogDto logDto) {
 		Set<ConstraintViolation<LogDto>> violations = validator.validate(logDto);
+		LogDto[] logDtoArray = {logDto};
 		if (!violations.isEmpty()) {
-			isViolations = true;
-			violations.forEach(cv -> {
-				log.error(">>>> Recived LogDto that has violations of the constraint {}", violations.toString());
-				LogDto logDtoError = new LogDto(new Date(), LogType.BAD_REQUEST_EXCEPTION,
-						LogsAnalyzerService.class.getName(), 0, violations.toString());
-				log.debug(">>>> Generated new LogDto {}", logDtoError);
-				streamBridge.send(bindingName, logDtoError);
-			});
+			violations.forEach(cv -> log.error(">>>> logDto : {}; field: {}; message: {}",logDto,
+					cv.getPropertyPath(), cv.getMessage()));
+			logDtoArray[0] = new LogDto(new Date(),
+					LogType.BAD_REQUEST_EXCEPTION, LogsAnalyzerService.class.getName(), 0, violations.toString());
+			log.debug(">>>> Generated new LogDto {}", logDtoArray[0]);
 		}
-		return isViolations;
+		return logDtoArray[0];
 	}
 }

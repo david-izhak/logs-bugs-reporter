@@ -45,7 +45,6 @@ public class LogsAnalyzerTest {
 		LogDto logDto = new LogDto(new Date(), LogType.NO_EXCEPTION, "artifact", 0, "result");
 		log.debug("test::: Created logDto (non exception) {}", logDto.toString());
 		sendLog(logDto); 
-		//producer.send(new GenericMessage<LogDto>(logDto));
 		log.debug("test::: producer sends logDto");
 		assertThrows(Exception.class, consumer::receive);
 	}
@@ -54,7 +53,7 @@ public class LogsAnalyzerTest {
 	void analyzerTestException() {
 		LogDto logDtoException = new LogDto(new Date(), LogType.AUTHENTICATION_EXCEPTION, "artifact", 20, "result");
 		log.debug("test::: Created logDto (with exception) {}", logDtoException.toString());
-		producer.send(new GenericMessage<LogDto>(logDtoException));
+		sendLog(logDtoException);
 		log.debug("test::: producer sends logDtoException");
 		Message<byte[]> messag = consumer.receive(0, bindinName);
 		assertNotNull(messag);
