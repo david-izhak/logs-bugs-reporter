@@ -36,7 +36,7 @@ public class LogsAnalyzerTest {
 	
 	@BeforeEach
 	void setup() {
-		consumer.clear();
+		consumer.clear(bindinName);
 		log.debug("test::: Consumer was cleared before test (BeforeEach)");
 	}
 	
