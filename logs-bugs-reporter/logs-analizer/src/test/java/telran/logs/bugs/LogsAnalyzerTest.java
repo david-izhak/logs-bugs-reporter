@@ -37,26 +37,65 @@ public class LogsAnalyzerTest {
 	@BeforeEach
 	void setup() {
 		consumer.clear();
-		log.debug("Consumer was cleared before test (BeforeEach)");
+		log.debug("test::: Consumer was cleared before test (BeforeEach)");
 	}
 	
 	@Test
 	void analyzerTestNonException() {
 		LogDto logDto = new LogDto(new Date(), LogType.NO_EXCEPTION, "artifact", 0, "result");
-		log.debug("Created logDto (non exception) {}", logDto.toString());
-		producer.send(new GenericMessage<LogDto>(logDto));
-		log.debug("producer sends logDto");
+		log.debug("test::: Created logDto (non exception) {}", logDto.toString());
+		sendLog(logDto); 
+		//producer.send(new GenericMessage<LogDto>(logDto));
+		log.debug("test::: producer sends logDto");
 		assertThrows(Exception.class, consumer::receive);
 	}
 	
 	@Test
 	void analyzerTestException() {
 		LogDto logDtoException = new LogDto(new Date(), LogType.AUTHENTICATION_EXCEPTION, "artifact", 20, "result");
-		log.debug("Created logDto (with exception) {}", logDtoException.toString());
+		log.debug("test::: Created logDto (with exception) {}", logDtoException.toString());
 		producer.send(new GenericMessage<LogDto>(logDtoException));
-		log.debug("producer sends logDtoException");
+		log.debug("test::: producer sends logDtoException");
 		Message<byte[]> messag = consumer.receive(0, bindinName);
 		assertNotNull(messag);
-		log.debug("recieved in consumer {}", new String(messag.getPayload()));
+		log.debug("test::: recieved in consumer {}", new String(messag.getPayload()));
+	}
+	
+	
+
+	@Test
+	void logDtoValidationViolationDateTest() {
+		LogDto logDtoDateValidationViolation = new LogDto(null, LogType.NO_EXCEPTION, "artifact", 20, "result");
+		executeTestWithValidationViolation(logDtoDateValidationViolation);
+	}
+
+	@Test
+	void logDtoValidationViolationLogTypeTest() {
+		LogDto logDtoLogTypeValidationViolation = new LogDto(new Date(), null, "artifact", 20, "result");
+		executeTestWithValidationViolation(logDtoLogTypeValidationViolation);
+	}
+
+	@Test
+	void logDtoValidationViolationArtifactEmptyTest() {
+		LogDto logDtoArtifactValidationViolationEmpty = new LogDto(new Date(), LogType.NO_EXCEPTION, "", 20, "result");
+		executeTestWithValidationViolation(logDtoArtifactValidationViolationEmpty);
+	}
+
+	@Test
+	void logDtoValidationViolationArtifactNullTest() {
+		LogDto logDtoArtifactValidationViolationNull = new LogDto(new Date(), LogType.NO_EXCEPTION, null, 20, "result");
+		executeTestWithValidationViolation(logDtoArtifactValidationViolationNull);
+	}
+	
+	void executeTestWithValidationViolation(LogDto logDtoWithValidationViolation) {
+		sendLog(logDtoWithValidationViolation);
+		log.debug("test::: producer sends logDto with exception");
+		Message<byte[]> messag = consumer.receive(0, bindinName);
+		assertNotNull(messag);
+		log.debug("test::: recieved in consumer {}", new String(messag.getPayload()));
+	}
+
+	private void sendLog(LogDto logDto) {
+		producer.send(new GenericMessage<LogDto>(logDto));
 	}
 }

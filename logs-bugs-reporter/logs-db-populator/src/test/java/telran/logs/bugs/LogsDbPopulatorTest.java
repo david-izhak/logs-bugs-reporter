@@ -1,7 +1,6 @@
 package telran.logs.bugs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 
@@ -47,39 +46,6 @@ public class LogsDbPopulatorTest {
 		sendLog(logDto);
 		LogDoc actualDoc = logs.findAll().get(0);
 		assertEquals(logDto, actualDoc.getLogDto());
-	}
-
-	@Test
-	void logDtoValidationViolationDateTest() {
-		LogDto logDtoDateValidationViolation = new LogDto(null, LogType.NO_EXCEPTION, "artifact", 20, "result");
-		executeTestWithValidationViolation(logDtoDateValidationViolation);
-	}
-
-	@Test
-	void logDtoValidationViolationLogTypeTest() {
-		LogDto logDtoLogTypeValidationViolation = new LogDto(new Date(), null, "artifact", 20, "result");
-		executeTestWithValidationViolation(logDtoLogTypeValidationViolation);
-	}
-
-	@Test
-	void logDtoValidationViolationArtifactEmptyTest() {
-		LogDto logDtoArtifactValidationViolationEmpty = new LogDto(new Date(), LogType.NO_EXCEPTION, "", 20, "result");
-		executeTestWithValidationViolation(logDtoArtifactValidationViolationEmpty);
-	}
-
-	@Test
-	void logDtoValidationViolationArtifactNullTest() {
-		LogDto logDtoArtifactValidationViolationNull = new LogDto(new Date(), LogType.NO_EXCEPTION, null, 20, "result");
-		executeTestWithValidationViolation(logDtoArtifactValidationViolationNull);
-	}
-	
-	void executeTestWithValidationViolation(LogDto logDtoWithValidationViolation) {
-		sendLog(logDtoWithValidationViolation);
-		assertEquals(1, logs.findAll().size());
-		assertEquals(LogType.BAD_REQUEST_EXCEPTION, logs.findAll().get(0).getLogDto().logType);
-		assertEquals(LogsDbPopulatorAppl.class.getName(), logs.findAll().get(0).getLogDto().artifact);
-		assertEquals(0, logs.findAll().get(0).getLogDto().responseTime);
-		assertTrue(logs.findAll().get(0).getLogDto().result.contains("ConstraintViolationImpl"));
 	}
 
 	private void sendLog(LogDto logDto) {
