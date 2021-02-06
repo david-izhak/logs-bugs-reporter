@@ -21,9 +21,6 @@ import telran.logs.bugs.dto.LogType;
 @Slf4j
 public class LogsAnalyzerService {
 	
-	@Autowired
-	LogsRepo logs;
-	
 	@Value("${app-binding-name:exceptions-out-0}")
 	String bindingName;
 	
