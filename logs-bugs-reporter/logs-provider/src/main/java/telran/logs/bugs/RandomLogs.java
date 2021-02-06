@@ -93,7 +93,7 @@ public class RandomLogs {
 	}
 
 	private LogType getNonSecurityExceptionLog() {
-		LogType nonSecExceptions[] = { LogType.BAD_REQUEST_EXCEPTION, LogType.DUPLICATED_KEY_EXCEPTION,
+		LogType[] nonSecExceptions = { LogType.BAD_REQUEST_EXCEPTION, LogType.DUPLICATED_KEY_EXCEPTION,
 				LogType.NOT_FOUND_EXCEPTION, LogType.SERVER_EXCEPTION };
 		int ind = ThreadLocalRandom.current().nextInt(0, nonSecExceptions.length);
 		return nonSecExceptions[ind];

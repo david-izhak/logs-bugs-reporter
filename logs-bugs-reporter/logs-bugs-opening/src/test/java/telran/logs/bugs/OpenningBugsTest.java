@@ -48,6 +48,8 @@ class OpenningBugsTest {
 	@Autowired
 	InputDestination input;
 	
+	Programmer programmerMoshe = new Programmer(1, "Moshe", "moshe@mail.com");
+	
 	LogDto logDto_AUTHENTICATION_EXCEPTION = new LogDto(new Date(), LogType.AUTHENTICATION_EXCEPTION, "bug1", 20, "resultTest");
 	Bug bug_AUTHENTICATION_EXCEPTION = Bug.builder()
 			.description("AUTHENTICATION_EXCEPTION resultTest")
@@ -56,7 +58,7 @@ class OpenningBugsTest {
 			.status(BugStatus.ASSIGNED)
 			.seriousness(Seriousness.BLOCKING)
 			.openningMethod(OpeningMethod.AUTOMATIC)
-			.programmer(new Programmer(1, "Moshe"))
+			.programmer(programmerMoshe)
 			.build();
 	
 	LogDto logDto_BAD_REQUEST_EXCEPTION = new LogDto(new Date(), LogType.BAD_REQUEST_EXCEPTION, "bug1", 20, "resultTest");
@@ -67,7 +69,7 @@ class OpenningBugsTest {
 			.status(BugStatus.ASSIGNED)
 			.seriousness(Seriousness.MINOR)
 			.openningMethod(OpeningMethod.AUTOMATIC)
-			.programmer(new Programmer(1, "Moshe"))
+			.programmer(programmerMoshe)
 			.build();
 	
 	LogDto logDto_NOT_FOUND_EXCEPTION = new LogDto(new Date(), LogType.NOT_FOUND_EXCEPTION, "bug1", 20, "resultTest");
@@ -78,7 +80,7 @@ class OpenningBugsTest {
 			.status(BugStatus.ASSIGNED)
 			.seriousness(Seriousness.MINOR)
 			.openningMethod(OpeningMethod.AUTOMATIC)
-			.programmer(new Programmer(1, "Moshe"))
+			.programmer(programmerMoshe)
 			.build();
 	
 	LogDto logDto_DUPLICATED_KEY_EXCEPTION = new LogDto(new Date(), LogType.DUPLICATED_KEY_EXCEPTION, "bug1", 20, "resultTest");
@@ -89,7 +91,7 @@ class OpenningBugsTest {
 			.status(BugStatus.ASSIGNED)
 			.seriousness(Seriousness.MINOR)
 			.openningMethod(OpeningMethod.AUTOMATIC)
-			.programmer(new Programmer(1, "Moshe"))
+			.programmer(programmerMoshe)
 			.build();
 	
 	LogDto logDto_SERVER_EXCEPTION = new LogDto(new Date(), LogType.SERVER_EXCEPTION, "bug1", 20, "resultTest");
@@ -100,7 +102,7 @@ class OpenningBugsTest {
 			.status(BugStatus.ASSIGNED)
 			.seriousness(Seriousness.CRITICAL)
 			.openningMethod(OpeningMethod.AUTOMATIC)
-			.programmer(new Programmer(1, "Moshe"))
+			.programmer(programmerMoshe)
 			.build();
 	
 	LogDto logDto_AUTHORIZATION_EXCEPTION = new LogDto(new Date(), LogType.AUTHORIZATION_EXCEPTION, "bug1", 20, "resultTest");
@@ -111,7 +113,7 @@ class OpenningBugsTest {
 			.status(BugStatus.ASSIGNED)
 			.seriousness(Seriousness.CRITICAL)
 			.openningMethod(OpeningMethod.AUTOMATIC)
-			.programmer(new Programmer(1, "Moshe"))
+			.programmer(programmerMoshe)
 			.build();
 	
 	LogDto logDtoNoProgrammer = new LogDto(new Date(), LogType.AUTHORIZATION_EXCEPTION, "bug2", 20, "resultTest");
@@ -133,31 +135,29 @@ class OpenningBugsTest {
 			.status(BugStatus.ASSIGNED)
 			.seriousness(null)
 			.openningMethod(OpeningMethod.AUTOMATIC)
-			.programmer(new Programmer(1, "Moshe"))
+			.programmer(programmerMoshe)
 			.build();
 
 	
 	@Test
 	@Sql(INIT_SQL)
 	void primitiveTest() {
-		programmers.save(new Programmer(123, "Sara"));
+		programmers.save(new Programmer(123, "Sara", "sara@mail.com"));
 		assertEquals(2, programmers.count());
 	}
 	
 	@Test
 	@Sql(INIT_SQL)
 	void restoreProgrammerTest() {
-		Programmer programmerExp = new Programmer(1, "Moshe");
 		List<Programmer> programmersList = programmers.findAll();
 		assertEquals(1, programmersList.size());
-		assertEquals(programmerExp, programmersList.get(0));
+		assertEquals(programmerMoshe, programmersList.get(0));
 	}
 	
 	@Test
 	@Sql(INIT_SQL)
 	void restoreArtifactTest() {
-		Programmer programmer = new Programmer(1, "Moshe");
-		Artifact artifactExp = new Artifact("bug1", programmer);
+		Artifact artifactExp = new Artifact("bug1", programmerMoshe);
 		List<Artifact> artifactList = artifacts.findAll();
 		assertEquals(1, artifactList.size());
 		assertEquals(artifactExp, artifactList.get(0));

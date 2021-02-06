@@ -2,5 +2,5 @@ delete from bugs;
 delete from artifacts;
 delete from programmer;
 
-insert into programmer values(1, 'Moshe');
-insert into artifacts values('bug1', 1);
+insert into programmer (id, name, email) values(1, 'Moshe', 'moshe@mail.com');
+insert into artifacts (artifact_id, programmer_id) values('bug1', 1);

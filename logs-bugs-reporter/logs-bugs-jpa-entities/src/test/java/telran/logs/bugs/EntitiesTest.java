@@ -33,10 +33,12 @@ class EntitiesTest {
 
 	@Autowired
 	BugsRepo bugs;
+	
+	Programmer programmer = new Programmer(123, "Moshe", "moshe@mail.com");
+	
 
 	@Test
 	void bugCreationTest() {
-		Programmer programmer = new Programmer(123, "Moshe");
 		programmers.save(programmer);
 		Artifact artifact = new Artifact("authentication", programmer);
 		artifacts.save(artifact);
@@ -66,7 +68,7 @@ class EntitiesTest {
 				.status(BugStatus.ASSIGNED)
 				.seriousness(Seriousness.MINOR)
 				.openningMethod(OpeningMethod.AUTOMATIC)
-				.programmer(new Programmer(123, "Moshe"))
+				.programmer(programmer)
 				.build();
 			bugs.save(bug);
 		});
@@ -82,7 +84,7 @@ class EntitiesTest {
 					.status(BugStatus.ASSIGNED)
 					.seriousness(Seriousness.MINOR)
 					.openningMethod(OpeningMethod.AUTOMATIC)
-					.programmer(new Programmer(123, "Moshe"))
+					.programmer(programmer)
 					.build();
 			bugs.save(bug);
 		});
@@ -98,7 +100,7 @@ class EntitiesTest {
 					.status(null)
 					.seriousness(Seriousness.MINOR)
 					.openningMethod(OpeningMethod.AUTOMATIC)
-					.programmer(new Programmer(123, "Moshe"))
+					.programmer(programmer)
 					.build();
 			bugs.save(bug);
 		});
@@ -114,7 +116,7 @@ class EntitiesTest {
 					.status(BugStatus.ASSIGNED)
 					.seriousness(null)
 					.openningMethod(OpeningMethod.AUTOMATIC)
-					.programmer(new Programmer(123, "Moshe"))
+					.programmer(programmer)
 					.build();
 			bugs.save(bug);
 		});
@@ -130,7 +132,7 @@ class EntitiesTest {
 					.status(BugStatus.ASSIGNED)
 					.seriousness(Seriousness.MINOR)
 					.openningMethod(null)
-					.programmer(new Programmer(123, "Moshe"))
+					.programmer(programmer)
 					.build();
 			bugs.save(bug);
 		});

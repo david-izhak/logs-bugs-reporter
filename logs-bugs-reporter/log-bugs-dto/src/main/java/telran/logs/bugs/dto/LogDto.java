@@ -2,7 +2,7 @@ package telran.logs.bugs.dto;
 
 import java.util.Date;
 
-// import javax.validation.constraints.Min;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -12,7 +12,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class LogDto {
-	public LogDto(@NotNull Date dateTime, @NotNull LogType logType, @NotEmpty String artifact, int responseTime,  // TODO установить на responseTime минимальное значение времени, чтобы исключить случаи отрицательного значения и 0
+	public LogDto(@NotNull Date dateTime, @NotNull LogType logType, @NotEmpty String artifact, @Min(0) int responseTime, 
 			String result) {
 		this.dateTime = dateTime;
 		this.logType = logType;
@@ -27,7 +27,7 @@ public class LogDto {
 	public LogType logType;
 	@NotEmpty
 	public String artifact;
-	// @Min(0) // TODO при наличии этой аннотации вылетает ошибка 400. Подумать, как прикрутить проверку на то, чтобы не допускалось отрицательное значение
+	@Min(0)
 	public int responseTime;
 	public String result;
 }
