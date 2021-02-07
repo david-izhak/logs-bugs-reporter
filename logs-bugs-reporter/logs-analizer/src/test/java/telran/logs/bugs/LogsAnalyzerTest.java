@@ -2,7 +2,10 @@ package telran.logs.bugs;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,9 +39,23 @@ public class LogsAnalyzerTest {
 	
 	@BeforeEach
 	void setup() {
-		consumer.clear();
+//		consumer.clear(bindinName + ".destination");
+		consumer.clear(bindinName);
+//		consumer.clear();
+//		clear(consumer);
 		log.debug("test::: Consumer was cleared before test (BeforeEach)");
 	}
+//	void clear(OutputDestination outDest) {
+//		try {
+//			Field f = outDest.getClass().getDeclaredField("messageQueues");
+//			f.setAccessible(true);
+//			@SuppressWarnings("unchecked")
+//			var messageQueues = (Map<String, BlockingQueue<Message<byte[]>>>) f.get(outDest);
+//			messageQueues.values().forEach(BlockingQueue::clear);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	@Test
 	void analyzerTestNonException() {
@@ -46,7 +63,9 @@ public class LogsAnalyzerTest {
 		log.debug("test::: Created logDto (non exception) {}", logDto.toString());
 		sendLog(logDto); 
 		log.debug("test::: producer sends logDto");
-		assertThrows(Exception.class, consumer::receive);
+		//assertThrows(Exception.class, consumer::receive);
+		Message<byte[]> messag = consumer.receive();
+		assertNull(messag);
 	}
 	
 	@Test
@@ -59,7 +78,6 @@ public class LogsAnalyzerTest {
 		assertNotNull(messag);
 		log.debug("test::: recieved in consumer {}", new String(messag.getPayload()));
 	}
-	
 
 	@Test
 	void logDtoValidationViolationDateTest() {
