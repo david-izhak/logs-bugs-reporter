@@ -60,6 +60,7 @@ public class EmailNotifierService {
 	}
 
 	private String  messageTexFormatter(LogDto logDto, MailTo mailTo) {
+		StringBuilder stb = new StringBuilder();
 		log.debug(">>>> called messegeTexFormatter() method");
 		String line1 = String.format("%nHello, %s%n", mailTo.text);
 		String line2 = String.format("Exception has been received %n");
@@ -67,7 +68,7 @@ public class EmailNotifierService {
 		String line4 = String.format("Exception type: %s%n", logDto.logType);
 		String line5 = String.format("Artifact: %s%n", logDto.artifact);
 		String line6 = String.format("Explanation: %s%n", logDto.result);
-		return line1 + line2 + line3 + line4 + line5 + line6;
+		return stb.append(line1).append(line2).append(line3).append(line4).append(line5).append(line6).toString();
 	}
 
 
