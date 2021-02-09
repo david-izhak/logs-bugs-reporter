@@ -45,13 +45,13 @@ public class EmailNotifierService {
 		String email = emailClient.getEmailByArtifact(logDto.artifact);
 		log.debug(">>>> recievd email {} from repo", email);
 		MailTo recipient = MailTo.PROGRAMMER;
-		if (email.equals("")) {
+		if (email.isEmpty()) {
 			log.debug(">>>> recievd email is empty", email);
 			email = emailClient.getAssignerMail();
 			log.debug(">>>> recievd Assigner email {} from repo", email);
 			recipient = MailTo.ASSIGNER;
 		}
-		if (email.equals("") || email == null) {
+		if (email.isEmpty() || email == null) {
 			log.error("email ‘to’ has received neither from logs-bugs-email-provider nor from logs-bugs-assigner-mail-provider");
 		} else {
 			sendMail(logDto, email, recipient);
@@ -59,7 +59,7 @@ public class EmailNotifierService {
 		}
 	}
 
-	private String  messegeTexFormatter(LogDto logDto, MailTo mailTo) {
+	private String  messageTexFormatter(LogDto logDto, MailTo mailTo) {
 		log.debug(">>>> called messegeTexFormatter() method");
 		String line1 = String.format("%nHello, %s%n", mailTo.text);
 		String line2 = String.format("Exception has been received %n");
@@ -73,7 +73,7 @@ public class EmailNotifierService {
 
 	private void sendMail(LogDto logDto, String email, MailTo recipient) {
 		log.debug(">>>> called sendMail() method");
-		String messegeText = messegeTexFormatter (logDto, recipient);
+		String messegeText = messageTexFormatter (logDto, recipient);
 		log.debug(">>>> recievd messegeText: {}", messegeText);
 		
 		SimpleMailMessage message = new SimpleMailMessage();

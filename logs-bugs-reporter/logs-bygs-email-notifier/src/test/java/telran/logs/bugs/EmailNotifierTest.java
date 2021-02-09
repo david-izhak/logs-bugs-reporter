@@ -85,20 +85,26 @@ public class EmailNotifierTest {
 	void badFlow() throws MessagingException {
 		when(client.getEmailByArtifact(anyString())).thenReturn("");
 		when(client.getAssignerMail()).thenReturn("");
+		LogDto logException = new LogDto(new Date(), LogType.AUTHENTICATION_EXCEPTION, "artifact000", 0, "result");
+		input.send(new GenericMessage<LogDto>(logException));
 		assertEquals(0, greenMail.getReceivedMessages().length);
 	}
 
-	private void textMassageTest(LogDto logException, MimeMessage message, String recipien) {
-		assertTrue(GreenMailUtil.getBody(message).contains("Hello, "));
-		assertTrue(GreenMailUtil.getBody(message).contains(recipien));
-		assertTrue(GreenMailUtil.getBody(message).contains("Exception has been received"));
-		assertTrue(GreenMailUtil.getBody(message).contains("Date:"));
-		assertTrue(GreenMailUtil.getBody(message).contains("Exception type: "));
-		assertTrue(GreenMailUtil.getBody(message).contains("Artifact: "));
-		assertTrue(GreenMailUtil.getBody(message).contains("Explanation: "));
-		assertTrue(GreenMailUtil.getBody(message).contains(logException.dateTime.toString()));
-		assertTrue(GreenMailUtil.getBody(message).contains(logException.logType.toString()));
-		assertTrue(GreenMailUtil.getBody(message).contains(logException.artifact));
-		assertTrue(GreenMailUtil.getBody(message).contains(logException.result));
+	private void textMassageTest(LogDto logException, MimeMessage message, String recipient) {
+		String textMessageRecieved = GreenMailUtil.getBody(message);
+		textMassageTestExecute(textMessageRecieved, "Hello, ");
+		textMassageTestExecute(textMessageRecieved, recipient);
+		textMassageTestExecute(textMessageRecieved, "Exception has been received");
+		textMassageTestExecute(textMessageRecieved, "Date:");
+		textMassageTestExecute(textMessageRecieved, "Exception type: ");
+		textMassageTestExecute(textMessageRecieved, "Artifact: ");
+		textMassageTestExecute(textMessageRecieved, "Explanation: ");
+		textMassageTestExecute(textMessageRecieved, logException.dateTime.toString());
+		textMassageTestExecute(textMessageRecieved, logException.logType.toString());
+		textMassageTestExecute(textMessageRecieved, logException.artifact);
+		textMassageTestExecute(textMessageRecieved, logException.result);
+	}
+	private void textMassageTestExecute(String textMessageRecieved, String textMessageExpected) {
+		assertTrue(textMessageRecieved.contains(textMessageExpected));
 	}
 }
