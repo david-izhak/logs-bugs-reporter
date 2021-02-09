@@ -62,7 +62,7 @@ public class EmailNotifierService {
 	private String  messegeTexFormatter(LogDto logDto, MailTo mailTo) {
 		log.debug(">>>> called messegeTexFormatter() method");
 		String line1 = String.format("%nHello, %s%n", mailTo.text);
-		String line2 = "Exception has been received%n";
+		String line2 = String.format("Exception has been received %n");
 		String line3 = String.format("Date:%s%n", logDto.dateTime);
 		String line4 = String.format("Exception type: %s%n", logDto.logType);
 		String line5 = String.format("Artifact: %s%n", logDto.artifact);

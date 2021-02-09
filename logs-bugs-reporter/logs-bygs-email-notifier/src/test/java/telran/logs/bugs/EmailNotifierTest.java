@@ -45,12 +45,12 @@ public class EmailNotifierTest {
 	InputDestination input;
 	
 //	private String  messegeTexFormatter(LogDto logDto, String recipient) {
-//		String line1 = String.format("\nHello, %s\n", recipient);
-//		String line2 = "Exception has been received\n";
-//		String line3 = String.format("Date:%s\n", logDto.dateTime);
-//		String line4 = String.format("Exception type: %s\n", logDto.logType);
-//		String line5 = String.format("Artifact: %s\n", logDto.artifact);
-//		String line6 = String.format("Explanation: %s", logDto.result);
+//		String line1 = String.format("%nHello, %s%n", recipient);
+//		String line2 = String.format("Exception has been received %n");
+//		String line3 = String.format("Date:%s%n", logDto.dateTime);
+//		String line4 = String.format("Exception type: %s%n", logDto.logType);
+//		String line5 = String.format("Artifact: %s%n", logDto.artifact);
+//		String line6 = String.format("Explanation: %s%n", logDto.result);
 //		return line1 + line2 + line3 + line4 + line5 + line6;
 //	}
 	
@@ -79,6 +79,13 @@ public class EmailNotifierTest {
 		assertEquals("exception", message.getSubject());
 //		assertEquals(textExpected, GreenMailUtil.getBody(message));
 		textMassageTest(logException, message, "Opened Bugs Assigne");
+	}
+
+	@Test
+	void badFlow() throws MessagingException {
+		when(client.getEmailByArtifact(anyString())).thenReturn("");
+		when(client.getAssignerMail()).thenReturn("");
+		assertEquals(0, greenMail.getReceivedMessages().length);
 	}
 
 	private void textMassageTest(LogDto logException, MimeMessage message, String recipien) {
