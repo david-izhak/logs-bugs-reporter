@@ -2,10 +2,7 @@ package telran.logs.bugs;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.lang.reflect.Field;
 import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,15 +31,17 @@ public class LogsAnalyzerTest {
 	@Autowired
 	OutputDestination consumer;
 	
-	@Value("${app-binding-name}")
-	String bindinName;
+	@Value("${app-binding-name-exceptions:exceptions-out-0}")
+	String bindingNameExceptions;
+	@Value("${app-binding-name-logs:logs-out-0}")
+	String bindingNameLogs;
+	@Value("${app-logs-provider-artifact:logs-provider}")
+	String logsProviderArtifact;
+	
 	
 	@BeforeEach
 	void setup() {
-//		consumer.clear(bindinName + ".destination");
-		consumer.clear(bindinName);
-//		consumer.clear();
-//		clear(consumer);
+		consumer.clear(bindingNameExceptions);
 		log.debug("test::: Consumer was cleared before test (BeforeEach)");
 	}
 //	void clear(OutputDestination outDest) {
@@ -63,9 +62,9 @@ public class LogsAnalyzerTest {
 		log.debug("test::: Created logDto (non exception) {}", logDto.toString());
 		sendLog(logDto); 
 		log.debug("test::: producer sends logDto");
-		//assertThrows(Exception.class, consumer::receive);
-		Message<byte[]> messag = consumer.receive();
-		assertNull(messag);
+		assertNotNull(consumer.receive(0, bindingNameLogs));
+		assertNull(consumer.receive(0, bindingNameExceptions));
+		
 	}
 	
 	@Test
@@ -74,7 +73,7 @@ public class LogsAnalyzerTest {
 		log.debug("test::: Created logDto (with exception) {}", logDtoException.toString());
 		sendLog(logDtoException);
 		log.debug("test::: producer sends logDtoException");
-		Message<byte[]> messag = consumer.receive(0, bindinName);
+		Message<byte[]> messag = consumer.receive(0, bindingNameExceptions);
 		assertNotNull(messag);
 		log.debug("test::: recieved in consumer {}", new String(messag.getPayload()));
 	}
@@ -107,7 +106,7 @@ public class LogsAnalyzerTest {
 	void executeTestWithValidationViolation(LogDto logDtoWithValidationViolation) {
 		sendLog(logDtoWithValidationViolation);
 		log.debug("test::: producer sends logDto with exception");
-		Message<byte[]> messag = consumer.receive(0, bindinName);
+		Message<byte[]> messag = consumer.receive(0, bindingNameExceptions);
 		assertNotNull(messag);
 		log.debug("test::: recieved in consumer {}", new String(messag.getPayload()));
 	}

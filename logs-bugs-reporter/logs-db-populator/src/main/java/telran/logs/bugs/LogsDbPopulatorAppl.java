@@ -20,7 +20,7 @@ import telran.logs.bugs.mongo.doc.LogDoc;
 public class LogsDbPopulatorAppl {
 
 	@Autowired
-	LogsRepoPopulator logs;
+	LogsRepoPopulator logsRepo;
 
 	@Autowired
 	Validator validator;
@@ -41,7 +41,8 @@ public class LogsDbPopulatorAppl {
 	}
 
 	void takeAndSaveLogDto(LogDto logDto) {
-		logs.save(new LogDoc(logDto));
-		log.debug("log saved to repositoriy {}", logDto);
+		log.debug("received log", logDto);
+		logsRepo.save(new LogDoc(logDto));
+		log.debug("log saved to repositoriy {} (Mongo collection)", logDto);
 	}
 }

@@ -20,43 +20,40 @@ import telran.logs.bugs.dto.LogType;
 @Service
 @Slf4j
 public class LogsAnalyzerService {
-	
-	@Value("${app-binding-name:exceptions-out-0}")
-	String bindingName;
-	
+
+	@Value("${app-binding-name-exceptions:exceptions-out-0}")
+	String bindingNameExceptions;
+	@Value("${app-binding-name-logs:logs-out-0}")
+	String bindingNameLogs;
+	@Value("${app-logs-provider-artifact:logs-provider}")
+	String logsProviderArtifact;
+
 	@Autowired
 	StreamBridge streamBridge;
-	
+
 	@Autowired
 	Validator validator;
-	
+
 	@Bean
-	Consumer<LogDto> getAnalyzerBean(){
+	Consumer<LogDto> getAnalyzerBean() {
 		log.debug(">>>> Start creating of the consumer log {}", LogDto.class.getName());
 		return this::analyzerMethod;
 	}
-	
-	private void analyzerMethod(LogDto logDtoIn){
-		log.debug(">>>> recieved log {}", logDtoIn);
-		LogDto logDto = analyzeLogDtoViolations(logDtoIn);
-		if(logDto.logType != null && logDto.logType != LogType.NO_EXCEPTION) {
-			streamBridge.send(bindingName, logDto);
-			log.warn(">>>> Recieved log with LogType of exception {}, and sended thru streamBridge", logDto.logType);
-		}
-	}
 
-	private LogDto analyzeLogDtoViolations(LogDto logDto) {
-		log.debug(">>>> Start validation {}", logDto);
-		LogDto[] logDtoArray = {logDto};
+	void analyzerMethod(LogDto logDto) {
+		log.debug("recievd log {}", logDto);
 		Set<ConstraintViolation<LogDto>> violations = validator.validate(logDto);
+		final LogDto logForEach = logDto;
 		if (!violations.isEmpty()) {
-			log.debug(">>>> Founded violation");
-			violations.forEach(cv -> log.error(">>>> logDto with violation : {}; field: {}; message: {}",logDto,
-					cv.getPropertyPath(), cv.getMessage()));
-			logDtoArray[0] = new LogDto(new Date(),
-					LogType.BAD_REQUEST_EXCEPTION, LogsAnalyzerService.class.getName(), 0, violations.toString());
-			log.debug(">>>> Generated new LogDto {}", logDtoArray[0]);
+			violations.forEach(cv -> log.error("logDto : {}; field: {}; message: {}", logForEach, cv.getPropertyPath(),
+					cv.getMessage()));
+			logDto = new LogDto(new Date(), LogType.BAD_REQUEST_EXCEPTION, logsProviderArtifact, 0,
+					violations.toString());
 		}
-		return logDtoArray[0];
+		if (logDto.logType != LogType.NO_EXCEPTION) {
+			streamBridge.send(bindingNameExceptions, logDto);
+			log.debug("log: {} sent to binding name: {}", logDto, bindingNameExceptions);
+		}
+		streamBridge.send(bindingNameLogs, logDto);
 	}
 }
