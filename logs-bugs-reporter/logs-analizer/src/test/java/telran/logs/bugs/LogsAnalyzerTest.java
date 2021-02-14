@@ -2,7 +2,10 @@ package telran.logs.bugs;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,30 +44,34 @@ public class LogsAnalyzerTest {
 	
 	@BeforeEach
 	void setup() {
-		consumer.clear(bindingNameExceptions);
+		clear(consumer);
 		log.debug("test::: Consumer was cleared before test (BeforeEach)");
 	}
-//	void clear(OutputDestination outDest) {
-//		try {
-//			Field f = outDest.getClass().getDeclaredField("messageQueues");
-//			f.setAccessible(true);
-//			@SuppressWarnings("unchecked")
-//			var messageQueues = (Map<String, BlockingQueue<Message<byte[]>>>) f.get(outDest);
-//			messageQueues.values().forEach(BlockingQueue::clear);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
+	void clear(OutputDestination outDest) {
+		try {
+			Field f = outDest.getClass().getDeclaredField("messageQueues");
+			f.setAccessible(true);
+			@SuppressWarnings("unchecked")
+			var messageQueues = (Map<String, BlockingQueue<Message<byte[]>>>) f.get(outDest);
+			messageQueues.values().forEach(BlockingQueue::clear);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	@Test
 	void analyzerTestNonException() {
-		LogDto logDto = new LogDto(new Date(), LogType.NO_EXCEPTION, "artifact", 0, "result");
+		LogDto logDto = new LogDto(new Date(), LogType.NO_EXCEPTION, "artifact123", 0, "result123");
 		log.debug("test::: Created logDto (non exception) {}", logDto.toString());
 		sendLog(logDto); 
 		log.debug("test::: producer sends logDto");
-		assertNotNull(consumer.receive(0, bindingNameLogs));
+		Message<byte[]> message = consumer.receive(0, bindingNameLogs);
+		assertNotNull(message);
 		assertNull(consumer.receive(0, bindingNameExceptions));
-		
+		String messageStr = new String(message.getPayload());
+		assertTrue(messageStr.contains(logDto.logType.toString()));
+		assertTrue(messageStr.contains(logDto.artifact));
+		assertTrue(messageStr.contains(logDto.result));
 	}
 	
 	@Test
@@ -73,9 +80,13 @@ public class LogsAnalyzerTest {
 		log.debug("test::: Created logDto (with exception) {}", logDtoException.toString());
 		sendLog(logDtoException);
 		log.debug("test::: producer sends logDtoException");
-		Message<byte[]> messag = consumer.receive(0, bindingNameExceptions);
-		assertNotNull(messag);
-		log.debug("test::: recieved in consumer {}", new String(messag.getPayload()));
+		Message<byte[]> message = consumer.receive(0, bindingNameExceptions);
+		assertNotNull(message);
+		String messageStr = new String(message.getPayload());
+		assertTrue(messageStr.contains(logDtoException.logType.toString()));
+		assertTrue(messageStr.contains(logDtoException.artifact));
+		assertTrue(messageStr.contains(logDtoException.result));
+		log.debug("test::: recieved in consumer {}", new String(message.getPayload()));
 	}
 
 	@Test
@@ -106,9 +117,13 @@ public class LogsAnalyzerTest {
 	void executeTestWithValidationViolation(LogDto logDtoWithValidationViolation) {
 		sendLog(logDtoWithValidationViolation);
 		log.debug("test::: producer sends logDto with exception");
-		Message<byte[]> messag = consumer.receive(0, bindingNameExceptions);
-		assertNotNull(messag);
-		log.debug("test::: recieved in consumer {}", new String(messag.getPayload()));
+		Message<byte[]> message = consumer.receive(0, bindingNameExceptions);
+		assertNotNull(message);
+		String messageStr = new String(message.getPayload());
+		assertTrue(messageStr.contains(LogType.BAD_REQUEST_EXCEPTION.toString()));
+		assertTrue(messageStr.contains("logs-provider"));
+		assertTrue(messageStr.contains("ConstraintViolationImpl"));
+		log.debug("test::: recieved in consumer {}", new String(message.getPayload()));
 	}
 
 	private void sendLog(LogDto logDto) {

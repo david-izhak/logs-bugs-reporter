@@ -59,7 +59,7 @@ public class EmailNotifierService {
 		}
 	}
 
-	private String  messageTexFormatter(LogDto logDto, MailTo mailTo) {
+	private String  messageTextFormatter(LogDto logDto, MailTo mailTo) {
 		StringBuilder stb = new StringBuilder();
 		log.debug(">>>> called messegeTexFormatter() method");
 		String line1 = String.format("%nHello, %s%n", mailTo.text);
@@ -74,7 +74,7 @@ public class EmailNotifierService {
 
 	private void sendMail(LogDto logDto, String email, MailTo recipient) {
 		log.debug(">>>> called sendMail() method");
-		String messegeText = messageTexFormatter (logDto, recipient);
+		String messegeText = messageTextFormatter (logDto, recipient);
 		log.debug(">>>> recievd messegeText: {}", messegeText);
 		
 		SimpleMailMessage message = new SimpleMailMessage();
