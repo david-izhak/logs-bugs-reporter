@@ -42,7 +42,6 @@ public class BackOfficeRestApiTest {
 	@Value("${path-get_logs_by_type-authentication_exception}")
 	String pathGetLogsByTypeAuthenticationException;
 	
-//	
 	@Value("${path-get_logs_by_type-authorization_exception}")
 	String pathGetLogsByTypeAuthorizationException;
 
@@ -52,7 +51,7 @@ public class BackOfficeRestApiTest {
 	@Test
 	void getAllLogsTest() {
 		List <LogDto> list = queryListLogDto(pathGetAllLogs);
-		assertEquals(100000, list.size());
+		assertEquals(1000, list.size());
 	}
 	
 	@Test

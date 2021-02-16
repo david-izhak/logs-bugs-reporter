@@ -25,15 +25,15 @@ public class LogsInfoController {
 		return result;
 	}
 	
-//	@GetMapping(value="/logs/type", produces="application/stream+json")
-	@GetMapping(value="/logs/type")
+	@GetMapping(value="/logs/type", produces="application/stream+json")
+//	@GetMapping(value="/logs/type")
 	Flux<LogDto> getLogsByTypes(@RequestParam (name="type") LogType logType) {
 		Flux<LogDto> result = logsInfo.getLogsType(logType);
 		log.debug("Logs of type {} sent to a client", logType);
 		return result;
 	}
 
-	@GetMapping(value="/logs/exceptions")
+	@GetMapping(value="/logs/exceptions", produces="application/stream+json")
 	Flux<LogDto> getAllExceptionsLogs() {
 		Flux<LogDto> result = logsInfo.getAllExceptions();
 		log.debug("Logs of all exceptions sent to a client");
