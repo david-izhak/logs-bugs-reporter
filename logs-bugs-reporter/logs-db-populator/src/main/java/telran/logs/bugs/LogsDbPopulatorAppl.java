@@ -2,13 +2,9 @@ package telran.logs.bugs;
 
 import java.util.function.Consumer;
 
-import javax.validation.Validator;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,14 +18,6 @@ public class LogsDbPopulatorAppl {
 	@Autowired
 	LogsRepoPopulator logsRepo;
 
-	@Autowired
-	Validator validator;
-
-	@Value("${app-binding-name:exceptions-out-0}")
-	String bindingName;
-	@Autowired
-	StreamBridge streamBridge;
-
 	public static void main(String[] args) {
 		SpringApplication.run(LogsDbPopulatorAppl.class, args);
 		log.info("Started {}", LogsDbPopulatorAppl.class.getName());
@@ -42,7 +30,7 @@ public class LogsDbPopulatorAppl {
 
 	void takeAndSaveLogDto(LogDto logDto) {
 		log.debug("received log", logDto);
-		logsRepo.save(new LogDoc(logDto));
-		log.debug("log saved to repositoriy {} (Mongo collection)", logDto);
+		logsRepo.save(new LogDoc(logDto)).log("takeAndSaveLogDto ===>").subscribe();
+		log.debug("start saving log to repositoriy {} (Mongo collection)", logDto);
 	}
 }
