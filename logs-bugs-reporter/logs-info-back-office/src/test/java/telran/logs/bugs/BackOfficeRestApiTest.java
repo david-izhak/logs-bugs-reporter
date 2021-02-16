@@ -48,10 +48,13 @@ public class BackOfficeRestApiTest {
 	@Value("${back-office-test-path-get_all_exceptions}")
 	String	pathGetAllExceptions;
 	
+	@Value("${app-number-logs}")
+	int numberLogs;
+	
 	@Test
 	void getAllLogsTest() {
 		List <LogDto> list = queryListLogDto(pathGetAllLogs);
-		assertEquals(1000, list.size());
+		assertEquals(numberLogs, list.size());
 	}
 	
 	@Test
