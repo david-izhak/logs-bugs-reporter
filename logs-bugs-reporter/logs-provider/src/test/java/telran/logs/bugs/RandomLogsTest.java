@@ -13,11 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +29,7 @@ import telran.logs.bugs.dto.*;
 @Import(TestChannelBinderConfiguration.class)
 @Slf4j
 public class RandomLogsTest {
-
+	
 	@Value("${app-AUTHENTICATION_ARTIFACT:authentication}")
 	private String AUTHENTICATION_ARTIFACT;
 	@Value("${app-AUTHORIZATION_ARTIFACT:authorization}")
