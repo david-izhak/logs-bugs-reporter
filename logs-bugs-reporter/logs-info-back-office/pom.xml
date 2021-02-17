@@ -16,7 +16,7 @@
 		</dependency>
 		<dependency>
 			<groupId>telran.logs.bugs</groupId>
-			<artifactId>logs-provider</artifactId>
+			<artifactId>logs-random-generator</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 		<dependency>
@@ -24,5 +24,6 @@
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
 			<scope>test</scope>
 		</dependency>
+	
 	</dependencies>
 </project>

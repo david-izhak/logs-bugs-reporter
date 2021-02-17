@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 
 import lombok.extern.slf4j.Slf4j;
+
 import telran.logs.bugs.dto.*;
 
 @SpringBootTest
