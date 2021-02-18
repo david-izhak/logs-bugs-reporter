@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
-import telran.logs.bugs.RandomLogs;
 import telran.logs.bugs.mongo.doc.LogDoc;
 import telran.logs.bugs.repo.LogRepository;
 

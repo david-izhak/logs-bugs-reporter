@@ -26,9 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class LogDtoTest {
 	
 	public static @RestController class TestController {
-		
 		static LogDto logDtoExp;
-		
 		@PostMapping("/")
 		void testPost(@RequestBody @Valid LogDto logDto) {
 			assertEquals(logDtoExp, logDto);

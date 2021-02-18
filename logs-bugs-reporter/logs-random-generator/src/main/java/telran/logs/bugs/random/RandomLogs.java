@@ -1,4 +1,4 @@
-package telran.logs.bugs;
+package telran.logs.bugs.random;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -6,31 +6,33 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import telran.logs.bugs.dto.LogDto;
 import telran.logs.bugs.dto.LogType;
 
 @Component
 @NoArgsConstructor
+@Getter
 public class RandomLogs {
 
-	@Value("${app-count-classes}")
-	int nClasses;
+	//@Value("${app-count-classes}")
+	int nClasses = 20;
 
-	@Value("${app-secExceptionProb}")
-	int secExceptionProb;
+	//@Value("${app-secExceptionProb}")
+	int secExceptionProb = 30;
 
-	@Value("${app-exceptionProb}")
-	int exceptionProb;
+//	@Value("${app-exceptionProb}")
+	int exceptionProb = 10;
 
-	@Value("${app-authenticationProb}")
-	int authenticationProb;
+//	@Value("${app-authenticationProb}")
+	int authenticationProb = 70;
 
-	@Value("${app-min-response-time}")
-	int minResponseTime;
+//	@Value("${app-min-response-time}")
+	int minResponseTime = 20;
 
-	@Value("${app-max-response-time}")
-	int maxResponseTime;
+//	@Value("${app-max-response-time}")
+	int maxResponseTime = 200;
 
 	public LogDto createRandomLog() {
 		LogType logType = getLogType();

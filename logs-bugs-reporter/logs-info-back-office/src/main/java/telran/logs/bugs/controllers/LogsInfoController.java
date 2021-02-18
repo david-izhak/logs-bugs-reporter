@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import telran.logs.bugs.dto.LogDto;
 import telran.logs.bugs.dto.LogType;
+import telran.logs.bugs.dto.LogTypeCount;
 import telran.logs.bugs.interfaces.LogsInfo;
 
 @RestController
@@ -38,5 +39,10 @@ public class LogsInfoController {
 		Flux<LogDto> result = logsInfo.getAllExceptions();
 		log.debug("Logs of all exceptions sent to a client");
 		return result;
+	}
+	
+	@GetMapping(value="/logs/distribution", produces="application/stream+json")
+	Flux<LogTypeCount> getLogTypeOccurrencies() {
+		return logsInfo.getLogTypeOccurrences();
 	}
 }

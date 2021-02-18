@@ -3,6 +3,7 @@ package telran.logs.bugs.mongo.doc;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ public class LogDocTest {
 
 	@Autowired
 	LogsRepo logs;
+	
+	@BeforeEach
+	void clean() {
+		logs.deleteAll().block();
+	}
 
 	@Test
 	void singleDocStoreTest() {
