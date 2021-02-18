@@ -1,16 +1,13 @@
 package telran.logs.bugs;
 
 import java.util.function.Supplier;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import lombok.extern.slf4j.Slf4j;
-
 import telran.logs.bugs.dto.LogDto;
 import telran.logs.bugs.random.RandomLogs;
+import lombok.extern.slf4j.Slf4j;
 
 @SpringBootApplication
 @Slf4j
