@@ -30,6 +30,7 @@ public class RandomLogsTest {
 	private static final String AUTHORIZATION_ARTIFACT = "authorization";
 	private static final String CLASS_ARTIFACT = "class";
 	private static final long N_LOGS = 100000;
+	
 	@Autowired
 	RandomLogs randomLogs;
 	 
