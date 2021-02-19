@@ -10,13 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import lombok.extern.slf4j.Slf4j;
 import telran.logs.bugs.dto.LogDto;
 import telran.logs.bugs.dto.LogType;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @Slf4j
 public class BackOfficeRestApiTest {
@@ -35,6 +36,11 @@ public class BackOfficeRestApiTest {
 	
 	@Value("${app-number-logs}")
 	int numberLogs;
+	
+	@Test
+	void pu() {
+		assertEquals(1, 1);
+	}
 	
 	@Test
 	void getAllLogsTest() {
