@@ -17,11 +17,8 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.implementation.bytecode.collection.ArrayAccess;
 import reactor.core.publisher.Flux;
 import telran.logs.bugs.dto.ArtifactCount;
 import telran.logs.bugs.dto.LogDto;
