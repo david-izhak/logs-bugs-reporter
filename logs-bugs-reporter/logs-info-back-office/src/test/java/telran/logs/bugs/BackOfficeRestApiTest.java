@@ -126,15 +126,9 @@ public class BackOfficeRestApiTest {
 		return webTestClient.get()
 				.uri(path).exchange()
 				.expectStatus().isOk()
-				// v1
 				.expectBodyList(LogDto.class)
 				.returnResult()
 				.getResponseBody();
-		// v2
-		// .returnResult(LogDto.class)
-		// .getResponseBody()
-		// .collectList()
-		// .block();
 	}
 
 	@Test
@@ -148,24 +142,14 @@ public class BackOfficeRestApiTest {
 				new LogTypeCount(SERVER_EXCEPTION, 1),
 				new LogTypeCount(NO_EXCEPTION, 3));
 		
-		List<LogTypeCount> listRes = webTestClient.get()
-				.uri("/logs/distribution")
-				.exchange().expectStatus().isOk()
-				.expectBodyList(LogTypeCount.class)
-				.returnResult()
-				.getResponseBody();
+		List<LogTypeCount> listRes = getListFromWebTestClient("/logs/distribution", LogTypeCount.class);
 		executeTest(listExp, listRes);
 	}
 
 	@Test
 	void getMostEncounteredExceptionTypes() {
 		List<LogType> listExp = Arrays.asList(AUTHENTICATION_EXCEPTION, AUTHORIZATION_EXCEPTION);
-		List<LogType> listRes = webTestClient.get()
-				.uri("/logs/mostencountered_exception_types?n_types=2")
-				.exchange().expectStatus().isOk()
-				.expectBodyList(LogType.class)
-				.returnResult()
-				.getResponseBody();
+		List<LogType> listRes = getListFromWebTestClient("/logs/mostencountered_exception_types?n_types=2", LogType.class);
 		executeTest(listExp, listRes);
 	}
 
@@ -179,14 +163,14 @@ public class BackOfficeRestApiTest {
 				new ArtifactCount("class2", 2), 
 				new ArtifactCount("class1", 1)
 				);
-		List<ArtifactCount> listRes = getListFromWebTestClient("/logs/artifacts_distribution");
+		List<ArtifactCount> listRes = getListFromWebTestClient("/logs/artifacts_distribution", ArtifactCount.class);
 		executeTest(listExp, listRes);
 	}
 	
 	@Test
 	void getMostEencounteredAartifacts() {
 		List<String> listExp = Arrays.asList("class5", "class4");
-		List<String> listRes = getListFromWebTestClient("/logs/mostencountered_artifacts?n_artifacts=2");
+		List<String> listRes = getListFromWebTestClient("/logs/mostencountered_artifacts?n_artifacts=2", String.class);
 		executeTest(listExp, listRes);
 	}
 
@@ -194,11 +178,11 @@ public class BackOfficeRestApiTest {
 		assertTrue(listExp.size() == listRes.size() && listExp.containsAll(listRes) && listRes.containsAll(listExp));
 	}
 
-	private List getListFromWebTestClient(String path) {
+	private <T> List getListFromWebTestClient(String path, Class<T> clazz) {
 		return webTestClient.get()
 				.uri(path)
 				.exchange().expectStatus().isOk()
-				.expectBodyList(String.class)
+				.expectBodyList(clazz)
 				.returnResult()
 				.getResponseBody();
 	}
