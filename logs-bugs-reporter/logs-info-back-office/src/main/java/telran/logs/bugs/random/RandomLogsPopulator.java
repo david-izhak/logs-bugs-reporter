@@ -49,13 +49,15 @@ public class RandomLogsPopulator {
 
 	@PostConstruct
 	void populatingDb() {
-		log.info("===> population started... Should be saved {} logs", nLogs);
-		logRepository.saveAll(Flux.create(sink -> {
-			for (int i = 0; i < nLogs; i++) {
-				sink.next(new LogDoc(randomLogs.createRandomLog()));
-			}
-			sink.complete();
-		})).blockLast();
-		log.debug("===> Saved {} logs", logRepository.count().block());
+		if(flagPopulation) {
+			log.info("===> population started... Should be saved {} additional logs", nLogs);
+			logRepository.saveAll(Flux.create(sink -> {
+				for (int i = 0; i < nLogs; i++) {
+					sink.next(new LogDoc(randomLogs.createRandomLog()));
+				}
+				sink.complete();
+			})).blockLast();
+		}
+		log.debug("===> In repo total saved {} logs", logRepository.count().block());
 	}
 }
