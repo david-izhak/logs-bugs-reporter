@@ -42,7 +42,7 @@ public class LogsDbPopulatorTest {
 	void takeLogDto() {
 		LogDto logDto = new LogDto(new Date(), LogType.NO_EXCEPTION, "artifact", 20, "result");
 		sendLog(logDto);
-		List<LogDoc> actualDocs = logs.findAll().buffer(Duration.ofMillis(100)).blockFirst();
+		List<LogDoc> actualDocs = logs.findAll().delaySubscription(Duration.ofMillis(100)).buffer().blockFirst();
 		assertEquals(logDto, actualDocs.get(0).getLogDto());
 	}
 
