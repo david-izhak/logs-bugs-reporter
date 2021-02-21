@@ -81,7 +81,6 @@ public class BackOfficeRestApiTest {
 				new LogDto(DATE_TIME, NO_EXCEPTION, ARTIFACT, 20, "result"),
 				new LogDto(DATE_TIME, NO_EXCEPTION, ARTIFACT, 25, "result"),
 				new LogDto(DATE_TIME, NO_EXCEPTION, ARTIFACT, 30, "result")));
-		
 		allLogs = new ArrayList<>(noExceptions);
 		allLogs.addAll(exceptions);
 	}
@@ -134,20 +133,19 @@ public class BackOfficeRestApiTest {
 				new LogTypeCount(AUTHENTICATION_EXCEPTION, 5), 
 				new LogTypeCount(AUTHORIZATION_EXCEPTION, 4), 
 				new LogTypeCount(BAD_REQUEST_EXCEPTION, 3), 
-				new LogTypeCount(DUPLICATED_KEY_EXCEPTION, 1), 
-				new LogTypeCount(NOT_FOUND_EXCEPTION, 1),
+				new LogTypeCount(NO_EXCEPTION, 3),
 				new LogTypeCount(SERVER_EXCEPTION, 1),
-				new LogTypeCount(NO_EXCEPTION, 3));
+				new LogTypeCount(DUPLICATED_KEY_EXCEPTION, 1), 
+				new LogTypeCount(NOT_FOUND_EXCEPTION, 1)
+				);
 		
-		List<LogTypeCount> listRes = getListFromWebTestClient("/logs/distribution", LogTypeCount.class);
-		executeTest(listExp, listRes);
+		executeTest("/logs/distribution", LogTypeCount.class, listExp);
 	}
 
 	@Test
 	void getMostEncounteredExceptionTypes() {
 		List<LogType> listExp = Arrays.asList(AUTHENTICATION_EXCEPTION, AUTHORIZATION_EXCEPTION);
-		List<LogType> listRes = getListFromWebTestClient("/logs/mostencountered_exception_types?n_types=2", LogType.class);
-		executeTest(listExp, listRes);
+		executeTest("/logs/mostencountered_exception_types?n_types=2", LogType.class, listExp);
 	}
 
 	@Test
@@ -160,27 +158,20 @@ public class BackOfficeRestApiTest {
 				new ArtifactCount("class2", 2), 
 				new ArtifactCount("class1", 1)
 				);
-		List<ArtifactCount> listRes = getListFromWebTestClient("/logs/artifacts_distribution", ArtifactCount.class);
-		executeTest(listExp, listRes);
+		executeTest("/logs/artifacts_distribution", ArtifactCount.class, listExp);
 	}
 	
 	@Test
 	void getMostEencounteredAartifacts() {
 		List<String> listExp = Arrays.asList("class5", "class4");
-		List<String> listRes = getListFromWebTestClient("/logs/mostencountered_artifacts?n_artifacts=2", String.class);
-		executeTest(listExp, listRes);
+		executeTest("/logs/mostencountered_artifacts?n_artifacts=2", String.class, listExp);
 	}
-
-	private void executeTest(List listExp, List listRes) {
-		assertTrue(listExp.size() == listRes.size() && listExp.containsAll(listRes) && listRes.containsAll(listExp));
-	}
-
-	private <T> List getListFromWebTestClient(String path, Class<T> clazz) {
-		return webTestClient.get()
+	
+	private <T> void executeTest(String path, Class<T> clazz, List<T> list) {
+		 webTestClient.get()
 				.uri(path)
 				.exchange().expectStatus().isOk()
 				.expectBodyList(clazz)
-				.returnResult()
-				.getResponseBody();
+				.isEqualTo(list);
 	}
 }

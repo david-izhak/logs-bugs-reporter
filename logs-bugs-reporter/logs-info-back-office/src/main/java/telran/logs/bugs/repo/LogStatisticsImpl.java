@@ -44,17 +44,6 @@ public class LogStatisticsImpl implements LogStatistics {
 		return mongoTemplate.aggregate(pipeLine, LogTypeCount.class).map(logTypeCount -> logTypeCount.logType);
 	}
 	
-//	@Override
-//	public Flux<LogType> getMostEncounteredExceptionTypes(int nExceptions) {
-//		MatchOperation matchOperation = Aggregation.match(Criteria.where(LogDoc.LOG_TYPE).ne("NO_EXCEPTION"));
-//		GroupOperation groupOperation = Aggregation.group(LogDoc.LOG_TYPE).count().as(COUNT);
-//		SortOperation sortOperation = Aggregation.sort(Direction.DESC, COUNT);
-//		LimitOperation limitOperation = Aggregation.limit(nExceptions);
-//		ProjectionOperation projectionOperation = Aggregation.project(COUNT).and("_id").as(LogDoc.LOG_TYPE);
-//		TypedAggregation<LogDoc> pipeLine = Aggregation.newAggregation(LogDoc.class, matchOperation, groupOperation, sortOperation, limitOperation, projectionOperation);
-//		return mongoTemplate.aggregate(pipeLine, LogDoc.class).map(logDoc -> logDoc.getLogDto().logType);
-//	}
-	
 	@Override
 	public Flux<ArtifactCount> getArtifactOccurrences(){
 		GroupOperation groupOperation = Aggregation.group(ArtifactCount.ARTIFACT).count().as(COUNT);
