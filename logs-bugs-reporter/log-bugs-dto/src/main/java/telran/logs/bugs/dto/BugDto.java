@@ -7,9 +7,11 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class BugDto {
 	
 	@NotNull

@@ -75,10 +75,4 @@ public class LogDtoTest {
 						.content(mapper.writeValueAsString(TestController.logDtoExp))).andReturn().getResponse()
 						.getStatus());
 	}
-	
-//	@Test // TODO подумать, как прикрутить проверку на недопустимость отрицательного значения
-//	void testNegativeResposeTimeValue() throws JsonProcessingException, Exception {
-//		TestController.logDtoExp.responseTime = -1;
-//		testBadRequest(mock);
-//	}
 }

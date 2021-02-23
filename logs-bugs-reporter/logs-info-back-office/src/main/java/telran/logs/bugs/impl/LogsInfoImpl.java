@@ -40,7 +40,7 @@ public class LogsInfoImpl implements LogsInfo {
 
 	@Override
 	public Flux<LogType> getMostEncounteredExceptionTypes(int nExceptions) {
-		return logRepository.getMostEncounteredExceptionTypes(nExceptions);
+		return logRepository.getMostEncounteredExceptionTypes(nExceptions).map(lc -> lc.logType);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class LogsInfoImpl implements LogsInfo {
 
 	@Override
 	public Flux<String> getMostEncounterdArtifacts(int nArtifacts) {
-		return logRepository.getMostEncounterdArtifacts(nArtifacts);
+		return logRepository.getMostEncounterdArtifacts(nArtifacts).map(ac -> ac.artifact);
 	}
 
 }

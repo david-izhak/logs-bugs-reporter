@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.Min;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +71,7 @@ public class BugsReporterImpl implements BugsReporter {
 
 	private BugResponseDto toBugResponseDto(Bug bug) {
 		Programmer programmer = bug.getProgrammer();
-		long programmerId = programmer == null ?  0 : programmer.getId();
+		long programmerId = programmer == null ?  0 : programmer.getId(); // Is 0 possible? In class BugAssignDto is annotation @Min(1) over the field programmerId;
 		return new BugResponseDto(bug.getId(), bug.getSeriousness(), bug.getDescription(), bug.getDateOpen(), programmerId , bug.getDateClose(), bug.getStatus(), bug.getOpenningMethod());
 	}
 

@@ -7,7 +7,7 @@ import telran.logs.bugs.dto.LogTypeCount;
 
 public interface LogStatistics {
 	Flux<LogTypeCount> getLogTypeCounts();
-	Flux<LogType> getMostEncounteredExceptionTypes(int nExceptions);
+	Flux<LogTypeCount> getMostEncounteredExceptionTypes(int nExceptions);
 	Flux<ArtifactCount> getArtifactOccurrences();
-	Flux<String> getMostEncounterdArtifacts(int nArtifacts);
+	Flux<ArtifactCount> getMostEncounterdArtifacts(int nArtifacts);
 }
