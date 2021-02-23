@@ -60,7 +60,7 @@ public class LogStatisticsImpl implements LogStatistics {
 		LimitOperation limitOperation = Aggregation.limit(nArtifacts);
 		ProjectionOperation projectionOperation = Aggregation.project(COUNT).and("_id").as(ArtifactCount.ARTIFACT);
 		TypedAggregation<LogDoc> pipeLine = Aggregation.newAggregation(LogDoc.class, groupOperation, sortOperation, limitOperation, projectionOperation);
-//		return mongoTemplate.aggregate(pipeLine, ArtifactCount.class).map(artifactCount -> artifactCount.artifact);
-		return mongoTemplate.aggregate(pipeLine, ArtifactCount.class).map(artifactCount -> String.format("%s%n", artifactCount.artifact));
+		return mongoTemplate.aggregate(pipeLine, ArtifactCount.class).map(artifactCount -> artifactCount.artifact);
+//		return mongoTemplate.aggregate(pipeLine, ArtifactCount.class).map(artifactCount -> String.format("%s%n", artifactCount.artifact));
 	};
 }

@@ -16,14 +16,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.context.jdbc.Sql;
 
+import telran.logs.bugs.dto.BugStatus;
 import telran.logs.bugs.dto.LogDto;
 import telran.logs.bugs.dto.LogType;
+import telran.logs.bugs.dto.OpeningMethod;
+import telran.logs.bugs.dto.Seriousness;
 import telran.logs.bugs.jpa.entities.Artifact;
 import telran.logs.bugs.jpa.entities.Bug;
-import telran.logs.bugs.jpa.entities.BugStatus;
-import telran.logs.bugs.jpa.entities.OpeningMethod;
 import telran.logs.bugs.jpa.entities.Programmer;
-import telran.logs.bugs.jpa.entities.Seriousness;
 import telran.logs.bugs.services.LogDtoToBugConverterInterface;
 
 @SpringBootTest

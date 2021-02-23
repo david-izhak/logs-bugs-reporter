@@ -61,9 +61,9 @@ public class LogsInfoController {
 	}
 	
 	@GetMapping(value="/logs/mostencountered_artifacts", produces="application/stream+json")
-	Flux<String> getMostEncounterdArtifacts(@RequestParam (name="n_artifacts") int nArtifacts) {
-		return logsInfo.getMostEncounterdArtifacts(nArtifacts);
-//	Mono<List<String>>  getMostEncounterdArtifacts(@RequestParam (name="n_artifacts") int nArtifacts) {
-//		return logsInfo.getMostEncounterdArtifacts(nArtifacts).collectList();
+//	Flux<String> getMostEncounterdArtifacts(@RequestParam (name="n_artifacts") int nArtifacts) {
+//		return logsInfo.getMostEncounterdArtifacts(nArtifacts);
+	Mono<List<String>>  getMostEncounterdArtifacts(@RequestParam (name="n_artifacts") int nArtifacts) {
+		return logsInfo.getMostEncounterdArtifacts(nArtifacts).collectList();
 	}
 }

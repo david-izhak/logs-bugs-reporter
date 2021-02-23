@@ -13,12 +13,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import telran.logs.bugs.dto.BugStatus;
+import telran.logs.bugs.dto.OpeningMethod;
+import telran.logs.bugs.dto.Seriousness;
 import telran.logs.bugs.jpa.entities.Artifact;
 import telran.logs.bugs.jpa.entities.Bug;
-import telran.logs.bugs.jpa.entities.BugStatus;
-import telran.logs.bugs.jpa.entities.OpeningMethod;
 import telran.logs.bugs.jpa.entities.Programmer;
-import telran.logs.bugs.jpa.entities.Seriousness;
 
 @ExtendWith(SpringExtension.class)
 @EnableAutoConfiguration

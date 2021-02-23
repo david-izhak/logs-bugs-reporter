@@ -12,23 +12,40 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
+import telran.logs.bugs.dto.BugStatus;
+import telran.logs.bugs.dto.OpeningMethod;
+import telran.logs.bugs.dto.Seriousness;
 
 @Entity
 @Table(name = "bugs")
 @NoArgsConstructor
 @Getter
 @ToString
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @EqualsAndHashCode
+@Setter
+@Builder
+@AllArgsConstructor
 public class Bug {
+	
+
+	public Bug(String description, LocalDate dateOpen, LocalDate dateClose, BugStatus status, Seriousness seriousness,
+			OpeningMethod openningMethod, Programmer programmer) {
+		super();
+		this.description = description;
+		this.dateOpen = dateOpen;
+		this.dateClose = dateClose;
+		this.status = status;
+		this.seriousness = seriousness;
+		this.openningMethod = openningMethod;
+		this.programmer = programmer;
+	}
 
 	@Id
 	@GeneratedValue
