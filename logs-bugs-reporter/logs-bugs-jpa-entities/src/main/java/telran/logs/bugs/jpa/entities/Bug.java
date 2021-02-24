@@ -37,7 +37,6 @@ public class Bug {
 
 	public Bug(String description, LocalDate dateOpen, LocalDate dateClose, BugStatus status, Seriousness seriousness,
 			OpeningMethod openningMethod, Programmer programmer) {
-		super();
 		this.description = description;
 		this.dateOpen = dateOpen;
 		this.dateClose = dateClose;
@@ -50,7 +49,6 @@ public class Bug {
 	@Id
 	@GeneratedValue
 	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
 	long id;
 
 	@Column(nullable = false)

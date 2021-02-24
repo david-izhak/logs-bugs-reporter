@@ -4,9 +4,11 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.Min;
 
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@ToString
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper=true)
 public class BugResponseDto extends BugAssignDto {
 
 	public BugResponseDto(long bugId, Seriousness seriosness, String description, LocalDate dateOpen, @Min(1) long programmer,

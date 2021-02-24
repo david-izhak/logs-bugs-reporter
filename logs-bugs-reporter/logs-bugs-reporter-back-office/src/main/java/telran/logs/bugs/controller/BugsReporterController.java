@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,13 @@ public class BugsReporterController {
 	@Autowired
 	BugsReporter bugsReporter;
 	
-	@PostMapping (value="/bugs/programmers", produces = "application/json")
+	static final String Path_Bugs_Programmers = "/bugs/programmers";
+	static final String Path_Bugs_Open = "/bugs/open";
+	static final String Path_Bugs_Open_Assign = "/bugs/open/assign";
+	static final String Path_Bugs_Assign = "/bugs/assign";
+	static final String Path_Bugs_Programmers_Get = "/bugs/programmers";
+	
+	@PostMapping (value=Path_Bugs_Programmers, produces = APPLICATION_JSON_VALUE)
 	public ProgrammerDto addProgrammer (@RequestBody @Valid ProgrammerDto programmerDto) {
 		log.debug("Recieved Post request with ProgrammerDto {}", programmerDto);
 		ProgrammerDto newProgrammerDto = bugsReporter.addProgrammer(programmerDto);
@@ -38,7 +45,7 @@ public class BugsReporterController {
 		return newProgrammerDto;
 	}
 	
-	@PostMapping (value="/bugs/open", produces = "application/json")
+	@PostMapping (value=Path_Bugs_Open, produces = APPLICATION_JSON_VALUE)
 	public BugResponseDto openBug (@RequestBody @Valid BugDto bugDto) {
 		log.debug("Recieved Post request with BugDto {}", bugDto);
 		BugResponseDto bugResponseDto = bugsReporter.openBug(bugDto);
@@ -46,7 +53,7 @@ public class BugsReporterController {
 		return bugResponseDto;
 	}
 
-	@PostMapping (value="/bugs/open/assign", produces = "application/json")
+	@PostMapping (value=Path_Bugs_Open_Assign, produces = APPLICATION_JSON_VALUE)
 	public BugResponseDto openAndAssignBug (@RequestBody @Valid BugAssignDto bugAssignDto) {
 		log.debug("Recieved Post request with BugAssignDto {}", bugAssignDto);
 		BugResponseDto bugResponseDto = bugsReporter.openBugAndAssignBug(bugAssignDto);
@@ -54,14 +61,14 @@ public class BugsReporterController {
 		return bugResponseDto;
 	}
 	
-	@PutMapping (value="/bugs/assign")
+	@PutMapping (value=Path_Bugs_Assign)
 	public void assignBug (@RequestBody @Valid AssignBugData assignBugData) {
 		log.debug("Recieved Put request with AssignBugData {}", assignBugData);
 		bugsReporter.assignBug(assignBugData);
 		log.debug("Method assignBug called");
 	}
 	
-	@GetMapping (value="/bugs/programmers", produces = "application/json")
+	@GetMapping (value=Path_Bugs_Programmers_Get, produces = APPLICATION_JSON_VALUE)
 	public List<BugResponseDto> getBugsProgrammer (@RequestParam (name="programmer_id") @Min(1) long programmer_id) {
 		log.debug("Recieved Get request with long programmer_id {}", programmer_id);
 		List<BugResponseDto> listBugResponseDto = bugsReporter.getBugsProgrammer(programmer_id);
