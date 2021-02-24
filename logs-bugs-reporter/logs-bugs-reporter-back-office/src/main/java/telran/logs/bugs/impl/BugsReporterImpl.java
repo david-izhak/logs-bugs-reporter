@@ -130,8 +130,8 @@ public class BugsReporterImpl implements BugsReporter {
 
 	@Override
 	public List<EmailBugsCount> getEmailBugsCounts() {
-		// TODO Auto-generated method stub
-		return null;
+		List<EmailBugsCount> result = bugRepository.emailBugsCounts();
+		return result;
 	}
 
 	@Override

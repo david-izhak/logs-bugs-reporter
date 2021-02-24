@@ -24,6 +24,6 @@ public class EmailProviderAppl {
 	@GetMapping("/email/{artifact}")
 	String getEmail (@PathVariable(name = "artifact") String artifact) {
 		Artifact artifactEntities = artifactsRepo.findById(artifact).orElse(null);
-		return  artifactEntities == null ? "" : artifactEntities.getProgrammer().getEmail();
+		return  artifactEntities == null ? "No email" : artifactEntities.getProgrammer().getEmail();
 	}
 }

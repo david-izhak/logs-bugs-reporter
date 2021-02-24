@@ -20,6 +20,7 @@ import telran.logs.bugs.dto.AssignBugData;
 import telran.logs.bugs.dto.BugAssignDto;
 import telran.logs.bugs.dto.BugDto;
 import telran.logs.bugs.dto.BugResponseDto;
+import telran.logs.bugs.dto.EmailBugsCount;
 import telran.logs.bugs.dto.ProgrammerDto;
 import telran.logs.bugs.interfaces.BugsReporter;
 
@@ -74,5 +75,11 @@ public class BugsReporterController {
 		List<BugResponseDto> listBugResponseDto = bugsReporter.getBugsProgrammer(programmer_id);
 		log.debug("Start sending List<BugResponseDto> {}", listBugResponseDto);
 		return listBugResponseDto;
+	}
+	
+	@GetMapping(BUGS_PROGRAMMERS_COUNT)
+	List<EmailBugsCount> getEmailBugsCount(){
+		List<EmailBugsCount> result = bugsReporter.getEmailBugsCounts();
+		return result ;
 	}
 }
