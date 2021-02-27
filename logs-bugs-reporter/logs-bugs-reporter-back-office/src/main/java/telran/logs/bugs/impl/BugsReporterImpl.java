@@ -5,12 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.validation.constraints.Min;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import telran.logs.bugs.dto.ArtifactDto;
 import telran.logs.bugs.dto.AssignBugData;
 import telran.logs.bugs.dto.BugAssignDto;
@@ -22,6 +20,7 @@ import telran.logs.bugs.dto.EmailBugsCount;
 import telran.logs.bugs.dto.OpeningMethod;
 import telran.logs.bugs.dto.ProgrammerDto;
 import telran.logs.bugs.interfaces.BugsReporter;
+import telran.logs.bugs.jpa.entities.Artifact;
 import telran.logs.bugs.jpa.entities.Bug;
 import telran.logs.bugs.jpa.entities.Programmer;
 import telran.logs.bugs.jpa.repo.ArtifactRepository;
@@ -29,13 +28,13 @@ import telran.logs.bugs.jpa.repo.BugRepository;
 import telran.logs.bugs.jpa.repo.ProgrammerRepository;
 
 @Service
+@Slf4j
 public class BugsReporterImpl implements BugsReporter {
 	
 	BugRepository bugRepository;
 	ArtifactRepository artifactRepository;
 	ProgrammerRepository programmerRepository;
 
-	@Autowired
 	public BugsReporterImpl(BugRepository bugRepository, ArtifactRepository artifactRepository,
 			ProgrammerRepository programmerRepository) {
 		super();
@@ -54,8 +53,10 @@ public class BugsReporterImpl implements BugsReporter {
 
 	@Override
 	public ArtifactDto addArtifact(ArtifactDto artifactDto) {
-		// TODO Auto-generated method stub
-		return null;
+		// FIXME exceptions handling and key duplication check
+		Programmer programmer = programmerRepository.findById(artifactDto.programmer).orElse(null);
+		artifactRepository.save(new Artifact(artifactDto.artifactId, programmer));
+		return artifactDto;
 	}
 
 	@Override
@@ -102,20 +103,25 @@ public class BugsReporterImpl implements BugsReporter {
 
 	@Override
 	public List<BugResponseDto> getNonAssignedBugs() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Bug> bugs = bugRepository.findByStatus(BugStatus.OPENND);
+		return toListBugResponseDto(bugs);
 	}
 
 	@Override
 	public void closeBug(CloseBugData closeData) {
-		// TODO Auto-generated method stub
-
+		// FIXME exceptions handling
+		Bug bug = bugRepository.findById(closeData.bugId).orElse(null);
+		bug.setDescription(bug.getDescription() + "\nClose Description: " + closeData.description);
+		bug.setStatus(BugStatus.CLOSED);
+		bug.setDateClose(closeData.dateClose);
+		log.debug("====> bug with index 0 is {}", bugRepository.findAll().get(0));
 	}
 
 	@Override
 	public List<BugResponseDto> getUnClosedBugsMoreDuration(int days) {
-		// TODO Auto-generated method stub
-		return null;
+		LocalDate dateOpen = LocalDate.now().minusDays(days);
+		List<Bug> bugs = bugRepository.findByStatusNotAndDateOpenBefore(BugStatus.CLOSED, dateOpen);
+		return toListBugResponseDto(bugs );
 	}
 
 	@Override
@@ -136,14 +142,13 @@ public class BugsReporterImpl implements BugsReporter {
 
 	@Override
 	public List<String> getProgrammersMostBugs(int nProgrammer) {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> result = bugRepository.programmersMostBugs(nProgrammer);
+		return result;
 	}
 
 	@Override
-	public List<String> getProgrammersListBugs(int nProgrammer) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<String> getProgrammersLeastBugs (int nProgrammer) {
+		List<String> result = bugRepository.programmersLeastBugs(nProgrammer);
+		return result;
 	}
-
 }

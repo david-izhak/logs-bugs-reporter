@@ -23,6 +23,6 @@ public interface BugsReporter {
 	List<BugResponseDto> getBugsProgrammer(long programmerId);
 	List<EmailBugsCount> getEmailBugsCounts();
 	List<String> getProgrammersMostBugs(int nProgrammer);
-	List<String> getProgrammersListBugs(int nProgrammer);
+	List<String> getProgrammersLeastBugs(int nProgrammer);
 	
 }
