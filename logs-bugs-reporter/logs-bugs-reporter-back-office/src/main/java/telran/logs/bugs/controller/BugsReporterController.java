@@ -30,6 +30,7 @@ import static telran.logs.bugs.api.BugsReporterApi.*;
 @RestController
 @Slf4j
 @Validated
+
 public class BugsReporterController {
 
 	@Autowired
@@ -110,6 +111,5 @@ public class BugsReporterController {
 		List<String> result = bugsReporter.getProgrammersLeastBugs(nProgrammer);
 		log.debug("Start sending List of programmers with least bugs {}", result);
 		return result;
-		// TODO test
 	}
 }
