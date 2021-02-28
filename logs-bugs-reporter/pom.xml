@@ -65,5 +65,6 @@
 		<module>logs-info-back-office</module>
 		<module>logs-random-generator</module>
 		<module>logs-bugs-reporter-back-office</module>
+		<module>logs-bugs-exceptions-handler</module>
 	</modules>
 </project>
