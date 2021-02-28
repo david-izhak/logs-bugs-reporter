@@ -21,10 +21,10 @@ public interface BugRepository extends JpaRepository<Bug, Long> {
 	@Query("SELECT programmer.email AS email, COUNT(b) AS count FROM Bug b RIGHT JOIN b.programmer AS programmer GROUP BY programmer.email ORDER BY COUNT(b) DESC")
 	List<EmailBugsCount> emailBugsCounts();
 
-	@Query(value = "select name from programmer p left join bugs b on p.id=programmer_id group by name order by count(b) desc limit :nProgrammer", nativeQuery = true)
+	@Query(value = "select name from programmer p left join bugs b on p.id=programmer_id group by name order by count(b.*) desc limit :nProgrammer", nativeQuery = true)
 	List<String> programmersMostBugs(int nProgrammer);
 
-	@Query(value = "select name from programmer p left join bugs b on p.id=programmer_id group by name order by count(b) limit :nProgrammer", nativeQuery = true)
+	@Query(value = "select name from programmer p left join bugs b on p.id=programmer_id group by name order by count(b.*) limit :nProgrammer", nativeQuery = true)
 	List<String> programmersLeastBugs(int nProgrammer);
 
 }

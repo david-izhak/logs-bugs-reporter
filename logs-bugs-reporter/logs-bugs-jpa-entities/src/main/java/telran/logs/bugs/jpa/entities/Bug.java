@@ -8,6 +8,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -24,7 +25,8 @@ import telran.logs.bugs.dto.OpeningMethod;
 import telran.logs.bugs.dto.Seriousness;
 
 @Entity
-@Table(name = "bugs")
+@Table(name = "bugs", indexes = {@Index(columnList = "programmer_id"), 
+		@Index(columnList = "seriousness"), @Index(columnList = "status")})
 @NoArgsConstructor
 @Getter
 @ToString
@@ -33,7 +35,6 @@ import telran.logs.bugs.dto.Seriousness;
 @Builder
 @AllArgsConstructor
 public class Bug {
-	
 
 	public Bug(String description, LocalDate dateOpen, LocalDate dateClose, BugStatus status, Seriousness seriousness,
 			OpeningMethod openningMethod, Programmer programmer) {

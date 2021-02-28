@@ -19,6 +19,8 @@ import telran.logs.bugs.dto.CloseBugData;
 import telran.logs.bugs.dto.EmailBugsCount;
 import telran.logs.bugs.dto.OpeningMethod;
 import telran.logs.bugs.dto.ProgrammerDto;
+import telran.logs.bugs.dto.Seriousness;
+import telran.logs.bugs.dto.SeriousnessBugCount;
 import telran.logs.bugs.interfaces.BugsReporter;
 import telran.logs.bugs.jpa.entities.Artifact;
 import telran.logs.bugs.jpa.entities.Bug;
@@ -108,6 +110,7 @@ public class BugsReporterImpl implements BugsReporter {
 	}
 
 	@Override
+	@Transactional
 	public void closeBug(CloseBugData closeData) {
 		// FIXME exceptions handling
 		Bug bug = bugRepository.findById(closeData.bugId).orElse(null);
@@ -150,5 +153,17 @@ public class BugsReporterImpl implements BugsReporter {
 	public List<String> getProgrammersLeastBugs (int nProgrammer) {
 		List<String> result = bugRepository.programmersLeastBugs(nProgrammer);
 		return result;
+	}
+
+	@Override
+	public List<SeriousnessBugCount> getSeriousnessBugCounts() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Seriousness> getSeriousnessTypesWithMostBugs(int nTypes) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

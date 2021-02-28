@@ -10,6 +10,8 @@ import telran.logs.bugs.dto.BugResponseDto;
 import telran.logs.bugs.dto.CloseBugData;
 import telran.logs.bugs.dto.EmailBugsCount;
 import telran.logs.bugs.dto.ProgrammerDto;
+import telran.logs.bugs.dto.Seriousness;
+import telran.logs.bugs.dto.SeriousnessBugCount;
 
 public interface BugsReporter {
 	ProgrammerDto addProgrammer(ProgrammerDto programmerDto);
@@ -24,5 +26,6 @@ public interface BugsReporter {
 	List<EmailBugsCount> getEmailBugsCounts();
 	List<String> getProgrammersMostBugs(int nProgrammer);
 	List<String> getProgrammersLeastBugs(int nProgrammer);
-	
+	List<SeriousnessBugCount> getSeriousnessBugCounts();
+	List<Seriousness> getSeriousnessTypesWithMostBugs(int nTypes);
 }
