@@ -1,10 +1,13 @@
 package telran.logs.bugs.impl;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -145,25 +148,34 @@ public class BugsReporterImpl implements BugsReporter {
 
 	@Override
 	public List<String> getProgrammersMostBugs(int nProgrammer) {
-		List<String> result = bugRepository.programmersMostBugs(nProgrammer);
+//		List<String> result = bugRepository.programmersMostBugs(nProgrammer); //		Variant 1 - with native query
+		Pageable pageable = PageRequest.of(0, nProgrammer); //		Variant 2 - with JPQL
+		List<String> result = bugRepository.programmersMostBugs(pageable);
 		return result;
 	}
 
 	@Override
 	public List<String> getProgrammersLeastBugs (int nProgrammer) {
-		List<String> result = bugRepository.programmersLeastBugs(nProgrammer);
+//		List<String> result = bugRepository.programmersLeastBugs(nProgrammer); //		Variant 1 - with native query
+		Pageable pageable = PageRequest.of(0, nProgrammer); //		Variant 2 - with JPQL
+		List<String> result = bugRepository.programmersLeastBugs(pageable);
 		return result;
 	}
 
 	@Override
-	public List<SeriousnessBugCount> getSeriousnessBugCounts() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<SeriousnessBugCount> getSeriousnessDistribution() {
+		return Arrays
+				.stream(Seriousness.values())
+				.map(s -> new SeriousnessBugCount(s, bugRepository.countBySeriousness(s)))
+				.sorted((a, b) -> Long.compare(b.count, a.count))
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<Seriousness> getSeriousnessTypesWithMostBugs(int nTypes) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Seriousness> getSeriousnessTypesWithMostBugs(int nunberSeriousnessTypes) {
+//		List<Seriousness> result = bugRepository.seriousnessTypesWithMostCountOfBugs(nunberSeriousnessTypes);
+		Pageable pageable = PageRequest.of(0, nunberSeriousnessTypes); //		Variant 2 - with JPQL
+		List<Seriousness> result = bugRepository.seriousnessTypesWithMostCountOfBugs(pageable);
+		return result;
 	}
 }

@@ -46,6 +46,7 @@ import telran.logs.bugs.dto.EmailBugsCount;
 import telran.logs.bugs.dto.OpeningMethod;
 import telran.logs.bugs.dto.ProgrammerDto;
 import telran.logs.bugs.dto.Seriousness;
+import telran.logs.bugs.dto.SeriousnessBugCount;
 import telran.logs.bugs.jpa.entities.Bug;
 import telran.logs.bugs.jpa.entities.Programmer;
 import telran.logs.bugs.jpa.repo.ArtifactRepository;
@@ -294,8 +295,8 @@ public class BugsReporterRestApiTest {
 
 	@Test
 	@Order(10)
-	@DisplayName("get Programmers with Least Bugs")
-	void getProgrammersLeastBugsTest() {
+	@DisplayName("Get programmers with least quantity of bugs")
+	void getProgrammersWithLeastQuantityOfBugsTest() {
 //		Prepare data and repos
 		LocalDate date = LocalDate.now();
 		List<Programmer> programmersList = Arrays.asList(
@@ -316,6 +317,62 @@ public class BugsReporterRestApiTest {
 //		Execute test
 		webTestClient.get().uri(BUGS_LEAST_N_PROGRAMMERS + "?n_programmers=2").exchange().expectStatus().isOk()
 				.expectBody(String[].class).isEqualTo(expectedArray);
+	}
+	
+	@Test
+	@Order(11)
+	@DisplayName("Distribution of bugs according seriousness")
+	void seriousnessDistribution() {
+//		Prepare data and repos
+		LocalDate date = LocalDate.now();
+		List<Bug> bugsList = Arrays.asList(
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.BLOCKING, OpeningMethod.MANUAL, null),
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.BLOCKING, OpeningMethod.MANUAL, null),
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.BLOCKING, OpeningMethod.MANUAL, null),
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.COSMETIC, OpeningMethod.MANUAL, null),
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.COSMETIC, OpeningMethod.MANUAL, null),
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.MINOR, OpeningMethod.MANUAL, null),
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.CRITICAL, OpeningMethod.MANUAL, null));
+		bugRepository.saveAll(bugsList);
+		SeriousnessBugCount[] seriousnessBugCount = {
+				new SeriousnessBugCount(Seriousness.BLOCKING, 3),
+				new SeriousnessBugCount(Seriousness.COSMETIC, 2),
+				new SeriousnessBugCount(Seriousness.CRITICAL, 1),
+				new SeriousnessBugCount(Seriousness.MINOR, 1),
+				};
+//		Execute test
+		webTestClient.get()
+		.uri(BUGS_SERIOUSNESS_COUNT).exchange()
+		.expectStatus().isOk()
+		.expectBody(SeriousnessBugCount[].class)
+		.isEqualTo(seriousnessBugCount);
+	}
+	
+	@Test
+	@Order(11)
+	@DisplayName("Order of Seriousness types according bugs count")
+	void seriousnessTypesOrderAccordingBugsCount() {
+//		Prepare data and repos
+		LocalDate date = LocalDate.now();
+		List<Bug> bugsList = Arrays.asList(
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.BLOCKING, OpeningMethod.MANUAL, null),
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.BLOCKING, OpeningMethod.MANUAL, null),
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.BLOCKING, OpeningMethod.MANUAL, null),
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.COSMETIC, OpeningMethod.MANUAL, null),
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.COSMETIC, OpeningMethod.MANUAL, null),
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.MINOR, OpeningMethod.MANUAL, null),
+				new Bug("bug_description", date, null, BugStatus.OPENND, Seriousness.CRITICAL, OpeningMethod.MANUAL, null));
+		bugRepository.saveAll(bugsList);
+		List<Seriousness> seriousnessList = Arrays.asList(
+				Seriousness.BLOCKING,
+				Seriousness.COSMETIC
+		);
+//		Execute test
+		webTestClient.get()
+		.uri(BUGS_SERIOUSNESS_MOST + "?n_seriousness=2").exchange()
+		.expectStatus().isOk()
+		.expectBodyList(Seriousness.class)
+		.isEqualTo(seriousnessList);
 	}
 	
 	@Test

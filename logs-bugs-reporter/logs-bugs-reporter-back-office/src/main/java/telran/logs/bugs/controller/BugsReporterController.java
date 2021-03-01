@@ -24,6 +24,8 @@ import telran.logs.bugs.dto.BugResponseDto;
 import telran.logs.bugs.dto.CloseBugData;
 import telran.logs.bugs.dto.EmailBugsCount;
 import telran.logs.bugs.dto.ProgrammerDto;
+import telran.logs.bugs.dto.Seriousness;
+import telran.logs.bugs.dto.SeriousnessBugCount;
 import telran.logs.bugs.interfaces.BugsReporter;
 import static telran.logs.bugs.api.BugsReporterApi.*;
 
@@ -110,6 +112,22 @@ public class BugsReporterController {
 		log.debug("Recieved GET request of programmers with least bugs for n_programmers {}", nProgrammer);
 		List<String> result = bugsReporter.getProgrammersLeastBugs(nProgrammer);
 		log.debug("Start sending List of programmers with least bugs {}", result);
+		return result;
+	}
+
+	@GetMapping(BUGS_SERIOUSNESS_COUNT)
+	public List<SeriousnessBugCount> getSeriousnessDistribution() {
+		log.debug("Recieved GET request of distribution of bugs according seriousness");
+		List<SeriousnessBugCount> result = bugsReporter.getSeriousnessDistribution();
+		result.forEach(bc -> log.debug("seriousness: {}; count: {}", bc.getSeriousness(), bc.getCount())); 
+		return result;
+	}
+	
+	@GetMapping(BUGS_SERIOUSNESS_MOST)
+	public List<Seriousness> getSeriousnessTypesWithMostBugs(@RequestParam(name = "n_seriousness") @Min(1) int nunberSeriousnessTypes) {
+		log.debug("Recieved GET request of Seriousness types with most count of bugs");
+		List<Seriousness> result = bugsReporter.getSeriousnessTypesWithMostBugs(nunberSeriousnessTypes);
+		log.debug("List of seriousness types with most bugs {}; nTypes: {}", result, nunberSeriousnessTypes);
 		return result;
 	}
 }

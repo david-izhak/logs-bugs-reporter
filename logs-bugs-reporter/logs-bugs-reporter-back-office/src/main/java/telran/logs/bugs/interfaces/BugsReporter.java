@@ -26,6 +26,6 @@ public interface BugsReporter {
 	List<EmailBugsCount> getEmailBugsCounts();
 	List<String> getProgrammersMostBugs(int nProgrammer);
 	List<String> getProgrammersLeastBugs(int nProgrammer);
-	List<SeriousnessBugCount> getSeriousnessBugCounts();
 	List<Seriousness> getSeriousnessTypesWithMostBugs(int nTypes);
+	List<SeriousnessBugCount> getSeriousnessDistribution();
 }
