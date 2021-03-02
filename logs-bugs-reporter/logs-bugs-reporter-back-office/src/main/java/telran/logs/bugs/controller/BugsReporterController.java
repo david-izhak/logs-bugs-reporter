@@ -32,7 +32,6 @@ import static telran.logs.bugs.api.BugsReporterApi.*;
 @RestController
 @Slf4j
 @Validated
-
 public class BugsReporterController {
 
 	@Autowired
@@ -57,7 +56,7 @@ public class BugsReporterController {
 	@PostMapping(value = PATH_BUGS_OPEN_ASSIGN, produces = APPLICATION_JSON_VALUE)
 	public BugResponseDto openAndAssignBug(@RequestBody @Valid BugAssignDto bugAssignDto) {
 		log.debug("Recieved Post request with BugAssignDto {}", bugAssignDto);
-		BugResponseDto bugResponseDto = bugsReporter.openBugAndAssignBug(bugAssignDto);
+		BugResponseDto bugResponseDto = bugsReporter.openAndAssignBug(bugAssignDto);
 		log.debug("Start sending BugResponseDto {}", bugResponseDto);
 		return bugResponseDto;
 	}

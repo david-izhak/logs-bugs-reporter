@@ -15,6 +15,11 @@
 			<version>0.0.1</version>
 		</dependency>
 		<dependency>
+			<groupId>telran.logs.bugs</groupId>
+			<artifactId>logs-bugs-exceptions-handler</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>

@@ -27,9 +27,9 @@ public class Artifact {
 	
 	@Id
 	@Column(name = "artifact_id")
-	@NonNull String artifacId;
+	String artifacId;
 	
 	@ManyToOne
 	@JoinColumn(name = "programmer_id", nullable = false)
-	@NonNull Programmer programmer;
+	Programmer programmer;
 }

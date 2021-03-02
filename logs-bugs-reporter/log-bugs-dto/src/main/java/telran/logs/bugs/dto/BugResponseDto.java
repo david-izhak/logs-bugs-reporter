@@ -11,10 +11,10 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=true)
 public class BugResponseDto extends BugAssignDto {
 
-	public BugResponseDto(long bugId, Seriousness seriosness, String description, LocalDate dateOpen, @Min(1) long programmer,
+	public BugResponseDto(long bugId, Seriousness seriousness, String description, LocalDate dateOpen, @Min(1) long programmer,
 			LocalDate dateClose, BugStatus status, OpeningMethod openingMethod) {
 		
-		super(seriosness, description, dateOpen, programmer);
+		super(seriousness, description, dateOpen, programmer);
 		
 		this.bugId = bugId;
 		this.dateClose = dateClose;

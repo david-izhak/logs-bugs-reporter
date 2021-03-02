@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,37 +53,52 @@ public class BackOfficeRestApiTest {
 	@Value("${app-number-logs}")
 	int numberLogs;
 
-	static List<LogDto> exceptions;
-	static List<LogDto> noExceptions;
-	static List<LogDto> allLogs;
+//	Data set
 	static Date DATE_TIME = new Date();
 	static final String ARTIFACT = "artifact";
 	private static final String AUTHENTICATION_ERROR = "Authentication error";
 	private static final String AUTHORIZATION_ERROR = "Authorization error";
+	static List<LogDto> exceptions = new ArrayList<>(Arrays.asList(
+			new LogDto(DATE_TIME, AUTHENTICATION_EXCEPTION, "class5", 0, AUTHENTICATION_ERROR),
+			new LogDto(DATE_TIME, AUTHENTICATION_EXCEPTION, "class1", 0, AUTHENTICATION_ERROR),
+			new LogDto(DATE_TIME, AUTHENTICATION_EXCEPTION, "class2", 0, AUTHENTICATION_ERROR),
+			new LogDto(DATE_TIME, AUTHENTICATION_EXCEPTION, "class2", 0, AUTHENTICATION_ERROR),
+			new LogDto(DATE_TIME, AUTHENTICATION_EXCEPTION, "class3", 0, AUTHENTICATION_ERROR),
+			new LogDto(DATE_TIME, AUTHORIZATION_EXCEPTION, "class3", 0, AUTHORIZATION_ERROR),
+			new LogDto(DATE_TIME, AUTHORIZATION_EXCEPTION, "class3", 0, AUTHORIZATION_ERROR),
+			new LogDto(DATE_TIME, AUTHORIZATION_EXCEPTION, "class4", 0, AUTHORIZATION_ERROR),
+			new LogDto(DATE_TIME, AUTHORIZATION_EXCEPTION, "class4", 0, AUTHORIZATION_ERROR),
+			new LogDto(DATE_TIME, BAD_REQUEST_EXCEPTION, "class4", 0, ""),
+			new LogDto(DATE_TIME, BAD_REQUEST_EXCEPTION, "class4", 0, ""),
+			new LogDto(DATE_TIME, BAD_REQUEST_EXCEPTION, "class5", 0, ""),
+			new LogDto(DATE_TIME, DUPLICATED_KEY_EXCEPTION, "class5", 0, ""),
+			new LogDto(DATE_TIME, NOT_FOUND_EXCEPTION, "class5", 0, ""),
+			new LogDto(DATE_TIME, SERVER_EXCEPTION, "class5", 0, "")));
+	static List<LogDto> noExceptions = new ArrayList<>(Arrays.asList(
+			new LogDto(DATE_TIME, NO_EXCEPTION, ARTIFACT, 20, "result"),
+			new LogDto(DATE_TIME, NO_EXCEPTION, ARTIFACT, 25, "result"),
+			new LogDto(DATE_TIME, NO_EXCEPTION, ARTIFACT, 30, "result")));
+	static List<LogDto> allLogs = new ArrayList<>(noExceptions);
+	LogTypeCount[] listExp = {
+			new LogTypeCount(AUTHENTICATION_EXCEPTION, 5), 
+			new LogTypeCount(AUTHORIZATION_EXCEPTION, 4), 
+			new LogTypeCount(BAD_REQUEST_EXCEPTION, 3), 
+			new LogTypeCount(NO_EXCEPTION, 3),
+			new LogTypeCount(SERVER_EXCEPTION, 1),
+			new LogTypeCount(DUPLICATED_KEY_EXCEPTION, 1), 
+			new LogTypeCount(NOT_FOUND_EXCEPTION, 1)
+	};
+	ArtifactCount[] listExp2 = {
+			new ArtifactCount("class5", 5), 
+			new ArtifactCount("class4", 4), 
+			new ArtifactCount("class3", 3), 
+			new ArtifactCount("artifact", 3), 
+			new ArtifactCount("class2", 2), 
+			new ArtifactCount("class1", 1)};
+	String[] listExp3 = { "class5", "class4" };
 
 	@BeforeAll
 	static void setUpAll() {
-		exceptions = new ArrayList<>(Arrays.asList(
-				new LogDto(DATE_TIME, AUTHENTICATION_EXCEPTION, "class5", 0, AUTHENTICATION_ERROR),
-				new LogDto(DATE_TIME, AUTHENTICATION_EXCEPTION, "class1", 0, AUTHENTICATION_ERROR),
-				new LogDto(DATE_TIME, AUTHENTICATION_EXCEPTION, "class2", 0, AUTHENTICATION_ERROR),
-				new LogDto(DATE_TIME, AUTHENTICATION_EXCEPTION, "class2", 0, AUTHENTICATION_ERROR),
-				new LogDto(DATE_TIME, AUTHENTICATION_EXCEPTION, "class3", 0, AUTHENTICATION_ERROR),
-				new LogDto(DATE_TIME, AUTHORIZATION_EXCEPTION, "class3", 0, AUTHORIZATION_ERROR),
-				new LogDto(DATE_TIME, AUTHORIZATION_EXCEPTION, "class3", 0, AUTHORIZATION_ERROR),
-				new LogDto(DATE_TIME, AUTHORIZATION_EXCEPTION, "class4", 0, AUTHORIZATION_ERROR),
-				new LogDto(DATE_TIME, AUTHORIZATION_EXCEPTION, "class4", 0, AUTHORIZATION_ERROR),
-				new LogDto(DATE_TIME, BAD_REQUEST_EXCEPTION, "class4", 0, ""),
-				new LogDto(DATE_TIME, BAD_REQUEST_EXCEPTION, "class4", 0, ""),
-				new LogDto(DATE_TIME, BAD_REQUEST_EXCEPTION, "class5", 0, ""),
-				new LogDto(DATE_TIME, DUPLICATED_KEY_EXCEPTION, "class5", 0, ""),
-				new LogDto(DATE_TIME, NOT_FOUND_EXCEPTION, "class5", 0, ""),
-				new LogDto(DATE_TIME, SERVER_EXCEPTION, "class5", 0, "")));
-		noExceptions = new ArrayList<>(Arrays.asList(
-				new LogDto(DATE_TIME, NO_EXCEPTION, ARTIFACT, 20, "result"),
-				new LogDto(DATE_TIME, NO_EXCEPTION, ARTIFACT, 25, "result"),
-				new LogDto(DATE_TIME, NO_EXCEPTION, ARTIFACT, 30, "result")));
-		allLogs = new ArrayList<>(noExceptions);
 		allLogs.addAll(exceptions);
 	}
 	
@@ -95,6 +112,29 @@ public class BackOfficeRestApiTest {
 		Flux<LogDoc> savingFlux = logRepository.saveAll(allLogs.stream().map(LogDoc::new).collect(Collectors.toList()));
 		savingFlux.buffer().blockFirst();
 	}
+	
+	private List<LogDto> queryListLogDto(String path) {
+		return webTestClient.get()
+				.uri(path).exchange()
+				.expectStatus().isOk()
+				.expectBodyList(LogDto.class)
+				.returnResult()
+				.getResponseBody();
+	}
+	
+	private void executeGetRequestExpectBadRequest(String path) {
+		webTestClient.get()
+		.uri(path).exchange()
+		.expectStatus().isBadRequest();
+	}
+	
+	private <T> void executeTest(String path, Class<T[]> clazz, T[] expected) {
+		 webTestClient.get()
+				.uri(path)
+				.exchange().expectStatus().isOk()
+				.expectBody(clazz)
+				.isEqualTo(expected);
+	}
 
 	@Test
 	void getAllLogsTest() {
@@ -102,13 +142,31 @@ public class BackOfficeRestApiTest {
 		assertEquals(18, list.size());
 	}
 
-	@Test
-	void getLogsByTypeTest() {
-		Arrays.stream(LogType.values()).forEach(logType -> {
-			List<LogDto> list = queryListLogDto(pathGetLogsByTypeBase + logType);
-			list.forEach(logDto -> assertEquals(logDto.logType, logType));
-			log.debug("===> Test: asserted query for logType {}. Size of the responds list {}.", logType, list.size());
-		});
+	@Nested
+	@DisplayName("Tests for getLogsType method in LogsInfoImpl")
+	class LogsInfoImpl_getLogsType_test {
+		@Nested
+		@DisplayName("Positive")
+		class LogsInfoImpl_getLogsType_Positive {
+			@Test
+			void getLogsByTypeTest() {
+				Arrays.stream(LogType.values()).forEach(logType -> {
+					List<LogDto> list = queryListLogDto(pathGetLogsByTypeBase + logType);
+					list.forEach(logDto -> assertEquals(logDto.logType, logType));
+					log.debug("===> Test: asserted query for logType {}. Size of the responds list {}.", logType,
+							list.size());
+				});
+			}
+		}
+
+		@Nested
+		@DisplayName("Negative")
+		class LogsInfoImpl_getLogsType_Negative {
+			@Test
+			void getLogsByType_invalidType_expectBadRequest() {
+				executeGetRequestExpectBadRequest(pathGetLogsByTypeBase + "ERROR");
+			}
+		}
 	}
 
 	@Test
@@ -118,59 +176,58 @@ public class BackOfficeRestApiTest {
 		log.debug("===> Test: asserted query for all exceptions. Size of the responds list {}.", list.size());
 	}
 
-	private List<LogDto> queryListLogDto(String path) {
-		return webTestClient.get()
-				.uri(path).exchange()
-				.expectStatus().isOk()
-				.expectBodyList(LogDto.class)
-				.returnResult()
-				.getResponseBody();
-	}
-
 	@Test
 	void getDistribution() {
-		LogTypeCount[] listExp = {
-				new LogTypeCount(AUTHENTICATION_EXCEPTION, 5), 
-				new LogTypeCount(AUTHORIZATION_EXCEPTION, 4), 
-				new LogTypeCount(BAD_REQUEST_EXCEPTION, 3), 
-				new LogTypeCount(NO_EXCEPTION, 3),
-				new LogTypeCount(SERVER_EXCEPTION, 1),
-				new LogTypeCount(DUPLICATED_KEY_EXCEPTION, 1), 
-				new LogTypeCount(NOT_FOUND_EXCEPTION, 1)
-		};
-		
 		executeTest("/logs/distribution", LogTypeCount[].class, listExp);
 	}
 
-	@Test
-	void getMostEncounteredExceptionTypes() {
-		LogType[] expected = {AUTHENTICATION_EXCEPTION, AUTHORIZATION_EXCEPTION};
-		executeTest("/logs/mostencountered_exception_types?n_types=2", LogType[].class, expected);
+	@Nested
+	@DisplayName("Tests for getMostEncounteredExceptionTypes method in LogsInfoImpl")
+	class LogsInfoImpl_getMostEncounteredExceptionTypes_test {
+		@Nested
+		@DisplayName("Positive")
+		class LogsInfoImpl_getMostEncounteredExceptionTypes_Positive {
+			@Test
+			void getMostEncounteredExceptionTypes() {
+				LogType[] expected = { AUTHENTICATION_EXCEPTION, AUTHORIZATION_EXCEPTION };
+				executeTest("/logs/mostencountered_exception_types?n_types=2", LogType[].class, expected);
+			}
+		}
+		@Nested
+		@DisplayName("Negative")
+		class LogsInfoImpl_getMostEncounteredExceptionTypes_Negative {
+			@Test
+			void getMostEncounteredExceptionTypes_invalidNumberOfTtypes_expectedBadRequest() {
+				executeGetRequestExpectBadRequest("/logs/mostencountered_exception_types?n_types=0");
+				executeGetRequestExpectBadRequest("/logs/mostencountered_exception_types?n_types=-1");
+			}
+		}
 	}
 
 	@Test
 	void getArtifactsDistribution() {
-		ArtifactCount[] listExp = {
-				new ArtifactCount("class5", 5), 
-				new ArtifactCount("class4", 4), 
-				new ArtifactCount("class3", 3), 
-				new ArtifactCount("artifact", 3), 
-				new ArtifactCount("class2", 2), 
-				new ArtifactCount("class1", 1)};
-		executeTest("/logs/artifacts_distribution", ArtifactCount[].class, listExp);
+		executeTest("/logs/artifacts_distribution", ArtifactCount[].class, listExp2);
 	}
 	
-	@Test
-	void getMostEencounteredAartifacts() {
-		String[] listExp = {"class5", "class4"};
-		executeTest("/logs/mostencountered_artifacts?n_artifacts=2", String[].class, listExp);
-	}
-	
-	private <T> void executeTest(String path, Class<T[]> clazz, T[] expected) {
-		 webTestClient.get()
-				.uri(path)
-				.exchange().expectStatus().isOk()
-				.expectBody(clazz)
-				.isEqualTo(expected);
+	@Nested
+	@DisplayName("Tests for getMostEencounteredAartifacts method in LogsInfoImpl")
+	class LogsInfoImpl_getMostEencounteredAartifacts_test {
+		@Nested
+		@DisplayName("Positive")
+		class LogsInfoImpl_getMostEencounteredAartifacts_Positive {
+			@Test
+			void getMostEencounteredAartifacts() {
+				executeTest("/logs/mostencountered_artifacts?n_artifacts=2", String[].class, listExp3);
+			}
+		}
+		@Nested
+		@DisplayName("Negative")
+		class LogsInfoImpl_getMostEencounteredAartifacts_Negative {
+			@Test
+			void getMostEencounteredAartifacts() {
+				executeGetRequestExpectBadRequest("/logs/mostencountered_artifacts?n_artifacts=0");
+				executeGetRequestExpectBadRequest("/logs/mostencountered_artifacts?n_artifacts=-1");
+			}
+		}
 	}
 }
