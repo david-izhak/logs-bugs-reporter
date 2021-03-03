@@ -78,6 +78,9 @@ public class BugsReporterImpl implements BugsReporter {
 			throw new DuplicatedKeyException(String.format("Artifact with ID: %s, olready exsists", artifactDto.artifactId));
 		}
 		Programmer programmer = programmerRepository.findById(artifactDto.programmer).orElse(null);
+		if(programmer == null) {
+			throw new NotFoundException(String.format("Assigning can't be done - no programmer with ID: %s", artifactDto.programmer));
+		}
 		artifactRepository.save(new Artifact(artifactDto.artifactId, programmer));
 		return artifactDto;
 	}

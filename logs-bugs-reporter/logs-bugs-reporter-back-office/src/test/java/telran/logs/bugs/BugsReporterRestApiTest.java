@@ -140,9 +140,9 @@ public class BugsReporterRestApiTest {
 //	test for POST(2) isNotFound
 	private <T> void executePostTestExpectNotFound(String path, T dto) {
 		webTestClient.post()
-		.uri(PATH_BUGS_OPEN_ASSIGN)
+		.uri(path)
 		.contentType(MediaType.APPLICATION_JSON)
-		.bodyValue(bugAssignDto)
+		.bodyValue(dto)
 		.exchange()
 		.expectStatus().isNotFound();
 	}
@@ -550,9 +550,9 @@ public class BugsReporterRestApiTest {
 			void open_new_bug_with_invalid_programmer_id_expect_BadRequest() {
 				programmerRepository.save(programmersList.get(0));
 				BugAssignDto bugAssignDto2 = new BugAssignDto(Seriousness.BLOCKING, "description", date, -1); 
-				executePostTestExpectNotFound(PATH_BUGS_OPEN_ASSIGN, bugAssignDto2); // I think NotFound not correct. Should be BadRequest.
+				executePostTestExpectBadRequest(PATH_BUGS_OPEN_ASSIGN, bugAssignDto2);
 				BugAssignDto bugAssignDto3 = new BugAssignDto(Seriousness.BLOCKING, "description", date, 0); 
-				executePostTestExpectNotFound(PATH_BUGS_OPEN_ASSIGN, bugAssignDto3); // I think NotFound not correct. Should be BadRequest.
+				executePostTestExpectBadRequest(PATH_BUGS_OPEN_ASSIGN, bugAssignDto3);
 			}
 		}
 	}
@@ -665,6 +665,14 @@ public class BugsReporterRestApiTest {
 				executePostTestExpectBadRequest(PATH_BUGS_ARTIFACT, artifactDto1);
 				ArtifactDto artifactDto2 = new ArtifactDto("artifact_test", 0);
 				executePostTestExpectBadRequest(PATH_BUGS_ARTIFACT, artifactDto2);
+			}
+			@Test
+			@Order(46)
+			@Sql("fillTables.sql")
+			void create_new_artifac_in_db_with_not_exists_programmer_id_expect_NotFound() {
+				programmerRepository.saveAll(programmersList);
+				ArtifactDto artifactDto1 = new ArtifactDto("artifact_test", 100);
+				executePostTestExpectNotFound(PATH_BUGS_ARTIFACT, artifactDto1);
 			}
 		}
 	}

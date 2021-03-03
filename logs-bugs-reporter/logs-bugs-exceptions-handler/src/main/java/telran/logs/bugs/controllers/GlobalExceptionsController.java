@@ -2,6 +2,7 @@ package telran.logs.bugs.controllers;
 
 import javax.validation.ConstraintViolationException;
 
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,6 +29,12 @@ public class GlobalExceptionsController {
 	String methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
 		return processingException(e);
 	}
+	
+//	@ExceptionHandler(ConversionFailedException.class)
+//	@ResponseStatus(HttpStatus.BAD_REQUEST)
+//	String conversionFailedExceptionHandler(ConversionFailedException e) {
+//		return processingException(e);
+//	}
 
 	@ExceptionHandler(DuplicatedKeyException.class)
 	@ResponseStatus(HttpStatus.CONFLICT)
