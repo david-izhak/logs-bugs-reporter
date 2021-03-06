@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import telran.logs.bugs.dto.ArtifactDto;
 import telran.logs.bugs.dto.AssignBugData;
 import telran.logs.bugs.dto.BugAssignDto;
@@ -36,6 +38,7 @@ import telran.logs.bugs.jpa.repo.BugRepository;
 import telran.logs.bugs.jpa.repo.ProgrammerRepository;
 
 @Service
+@Slf4j
 public class BugsReporterImpl implements BugsReporter {
 	
 	BugRepository bugRepository;
@@ -139,7 +142,7 @@ public class BugsReporterImpl implements BugsReporter {
 	}
 
 	@Override
-	public List<BugResponseDto> getNonAssignedBugs() { // TODO test
+	public List<BugResponseDto> getNonAssignedBugs() {
 		List<Bug> bugs = bugRepository.findByStatus(BugStatus.OPENND);
 		return toListBugResponseDto(bugs);
 	}
@@ -211,5 +214,71 @@ public class BugsReporterImpl implements BugsReporter {
 		Pageable pageable = PageRequest.of(0, nunberSeriousnessTypes); //		Variant 2 - with JPQL
 		List<Seriousness> result = bugRepository.seriousnessTypesWithMostCountOfBugs(pageable);
 		return result;
+	}
+	
+	@PostConstruct
+	void populatingDb() {
+		List<Programmer> programmersList = populateProgrammers();
+		populateArtifacts(programmersList);
+	}
+
+	@Transactional
+	private List<Programmer> populateProgrammers() {
+		List<Programmer> programmersList = Arrays.asList(
+				new Programmer(100, "Programmer100", "fghdfdfhgf+100@gmail.com"), 
+				new Programmer(101, "Programmer101", "fghdfdfhgf+101@gmail.com"), 
+				new Programmer(102, "Programmer102", "fghdfdfhgf+102@gmail.com"), 
+				new Programmer(103, "Programmer103", "fghdfdfhgf+103@gmail.com"), 
+				new Programmer(104, "Programmer104", "fghdfdfhgf+104@gmail.com"),
+				new Programmer(105, "Programmer105", "fghdfdfhgf+105@gmail.com"), 
+				new Programmer(106, "Programmer106", "fghdfdfhgf+106@gmail.com"), 
+				new Programmer(107, "Programmer107", "fghdfdfhgf+107@gmail.com"), 
+				new Programmer(108, "Programmer108", "fghdfdfhgf+108@gmail.com"),
+				new Programmer(109, "Programmer109", "fghdfdfhgf+109@gmail.com"), 
+				new Programmer(110, "Programmer110", "fghdfdfhgf+110@gmail.com"), 
+				new Programmer(111, "Programmer111", "fghdfdfhgf+111@gmail.com"), 
+				new Programmer(112, "Programmer112", "fghdfdfhgf+112@gmail.com"),
+				new Programmer(113, "Programmer113", "fghdfdfhgf+113@gmail.com"), 
+				new Programmer(114, "Programmer114", "fghdfdfhgf+114@gmail.com"), 
+				new Programmer(115, "Programmer115", "fghdfdfhgf+115@gmail.com"), 
+				new Programmer(116, "Programmer116", "fghdfdfhgf+116@gmail.com")
+				);
+		
+		log.debug("populatingDb===> Start populatin programmers to DB. Shold be {}.", programmersList.size());
+		programmerRepository.saveAll(programmersList);
+		log.debug("populatingDb===> In DB total saved {} programmers", programmerRepository.count());
+		return programmersList;
+	}
+	
+	@Transactional
+	private void populateArtifacts(List<Programmer> programmersList) {
+		List<Artifact> artifactsList = Arrays.asList(
+				new Artifact("class1", programmersList.get(0)),
+				new Artifact("class2", programmersList.get(0)),
+				new Artifact("class3", programmersList.get(0)),
+				new Artifact("class4", programmersList.get(0)),
+				new Artifact("class5", programmersList.get(0)),
+				new Artifact("class6", programmersList.get(1)),
+				new Artifact("class7", programmersList.get(1)),
+				new Artifact("class8", programmersList.get(1)),
+				new Artifact("class9", programmersList.get(1)),
+				new Artifact("class10", programmersList.get(3)),
+				new Artifact("class11", programmersList.get(3)),
+				new Artifact("class12", programmersList.get(3)),
+				new Artifact("class13", programmersList.get(4)),
+				new Artifact("class14", programmersList.get(4)),
+				new Artifact("class15", programmersList.get(5)),
+				new Artifact("class16", programmersList.get(6)),
+				new Artifact("class17", programmersList.get(7)),
+				new Artifact("class18", programmersList.get(8)),
+				new Artifact("class19", programmersList.get(9)),
+				new Artifact("class20", programmersList.get(10)),
+				new Artifact("authentication", programmersList.get(11)),
+				new Artifact("authorization", programmersList.get(12))
+				);
+		
+		log.debug("populatingDb===> Start populatin artifacts to DB. Shold be {}.", artifactsList.size());
+		artifactRepository.saveAll(artifactsList);
+		log.debug("populatingDb===> In repo total saved {} artifacts", artifactRepository.count());
 	}
 }

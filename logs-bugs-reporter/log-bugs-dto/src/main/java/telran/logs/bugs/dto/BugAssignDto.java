@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.Min;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 

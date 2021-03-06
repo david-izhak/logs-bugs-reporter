@@ -95,13 +95,13 @@ public class BugsReporterRestApiTest {
 	Bug bugExp2 = new Bug(1, "description" + "\nAssignment Description: " + "assign_description", date, null,
 			BugStatus.ASSIGNED, Seriousness.BLOCKING, OpeningMethod.MANUAL, programmersList.get(0));
 	List<Bug> bugsList = Arrays.asList(
-			new Bug("description", date, null, BugStatus.ASSIGNED, Seriousness.BLOCKING, OpeningMethod.MANUAL, programmersList.get(0)),
-			new Bug("description", date, null, BugStatus.ASSIGNED, Seriousness.BLOCKING, OpeningMethod.MANUAL, programmersList.get(0)),
-			new Bug("description", date, null, BugStatus.ASSIGNED, Seriousness.BLOCKING, OpeningMethod.MANUAL, programmersList.get(0)),
-			new Bug("description", date, null, BugStatus.ASSIGNED, Seriousness.COSMETIC, OpeningMethod.MANUAL, programmersList.get(1)),
-			new Bug("description", date, null, BugStatus.ASSIGNED, Seriousness.COSMETIC, OpeningMethod.MANUAL, programmersList.get(1)),
-			new Bug("description", date, null, BugStatus.ASSIGNED, Seriousness.MINOR, OpeningMethod.MANUAL, programmersList.get(2)),
-			new Bug("description", date, null, BugStatus.OPENND, Seriousness.CRITICAL, OpeningMethod.MANUAL, null)
+			new Bug("description", date.minusDays(1), null, BugStatus.ASSIGNED, Seriousness.BLOCKING, OpeningMethod.MANUAL, programmersList.get(0)),
+			new Bug("description", date.minusDays(2), null, BugStatus.ASSIGNED, Seriousness.BLOCKING, OpeningMethod.MANUAL, programmersList.get(0)),
+			new Bug("description", date.minusDays(2), null, BugStatus.ASSIGNED, Seriousness.BLOCKING, OpeningMethod.MANUAL, programmersList.get(0)),
+			new Bug("description", date.minusDays(3), null, BugStatus.ASSIGNED, Seriousness.COSMETIC, OpeningMethod.MANUAL, programmersList.get(1)),
+			new Bug("description", date.minusDays(3), null, BugStatus.ASSIGNED, Seriousness.COSMETIC, OpeningMethod.MANUAL, programmersList.get(1)),
+			new Bug("description", date.minusDays(3), null, BugStatus.ASSIGNED, Seriousness.MINOR, OpeningMethod.MANUAL, programmersList.get(2)),
+			new Bug("description", date.minusDays(1000), null, BugStatus.OPENND, Seriousness.CRITICAL, OpeningMethod.MANUAL, null)
 			);
 	SeriousnessBugCount[] seriousnessBugCount = {
 			new SeriousnessBugCount(Seriousness.BLOCKING, 3),
@@ -110,13 +110,14 @@ public class BugsReporterRestApiTest {
 			new SeriousnessBugCount(Seriousness.MINOR, 1),
 			};  // for test 11
 	BugDto bugDto = new BugDto(Seriousness.BLOCKING, "description", date);
-	BugResponseDto bugResponseDto1 = new BugResponseDto(1, Seriousness.BLOCKING, "description", date, 1, null, BugStatus.ASSIGNED, OpeningMethod.MANUAL);
+	BugResponseDto bugResponseDto1 = new BugResponseDto(1, Seriousness.BLOCKING, "description", date.minusDays(1), 1, null, BugStatus.ASSIGNED, OpeningMethod.MANUAL);
+	BugResponseDto bugResponseDto2 = new BugResponseDto(1, Seriousness.BLOCKING, "description", date, 1, null, BugStatus.ASSIGNED, OpeningMethod.MANUAL);
 	BugResponseDto bugResponseDto = new BugResponseDto(1, Seriousness.BLOCKING, "description", date, 0, null, BugStatus.OPENND, OpeningMethod.MANUAL);
 	List<BugResponseDto> listExp = Arrays.asList(bugResponseDto1);
 	ProgrammerDto programmerDto = new ProgrammerDto(1, "Bob", "bob@gmail.com");
 	ArtifactDto artifactDto = new ArtifactDto("artifact_test", 1);
 	CloseBugData closeBugData = new CloseBugData(1, date, "closeBugData_description");
-	BugAssignDto bugAssignDto1 = new BugAssignDto(Seriousness.BLOCKING, "description", date, 1);
+	BugAssignDto bugAssignDto1 = new BugAssignDto(Seriousness.BLOCKING, "description", date.minusDays(1), 1);
 	BugAssignDto bugAssignDto = new BugAssignDto(Seriousness.BLOCKING, "description", date, 1000);
 	String[] expectedArray = { "Bob", "John" };
 	String[] expectedArray2 = { "Tedd", "Anna" };
@@ -196,7 +197,8 @@ public class BugsReporterRestApiTest {
 		webTestClient.get()
 		.uri(uriStr)
 		.exchange()
-		.expectStatus().isBadRequest();
+		.expectStatus()
+		.isBadRequest();
 	}
 	
 //	test for GET(3) expected array
@@ -497,7 +499,7 @@ public class BugsReporterRestApiTest {
 			void open_bug_and_assign_to_programmer_with_date_null_expect_ok() {
 				programmerRepository.save(programmersList.get(0));
 				BugAssignDto bugAssignDto2 = new BugAssignDto(Seriousness.BLOCKING, "description", null, 1);
-				executePostTest(PATH_BUGS_OPEN_ASSIGN, BugResponseDto.class, bugAssignDto2, bugResponseDto1);
+				executePostTest(PATH_BUGS_OPEN_ASSIGN, BugResponseDto.class, bugAssignDto2, bugResponseDto2);
 			}
 		}
 		@Nested
@@ -528,14 +530,14 @@ public class BugsReporterRestApiTest {
 			@Order(26)
 			void open_new_bug_with_Seriousness_null_expect_BadRequest() {
 				programmerRepository.save(programmersList.get(0));
-				BugAssignDto bugAssignDto2 = new BugAssignDto(null, "description", LocalDate.now().minusYears(21), 1); 
+				BugAssignDto bugAssignDto2 = new BugAssignDto(null, "description", LocalDate.now().minusYears(10), 1); 
 				executePostTestExpectBadRequest(PATH_BUGS_OPEN_ASSIGN, bugAssignDto2);
 			}
 			@Test
 			@Order(27)
 			void open_new_bug_with_description_null_expect_BadRequest() {
 				programmerRepository.save(programmersList.get(0));
-				BugAssignDto bugAssignDto2 = new BugAssignDto(Seriousness.BLOCKING, null, LocalDate.now().minusYears(21), 1); 
+				BugAssignDto bugAssignDto2 = new BugAssignDto(Seriousness.BLOCKING, null, LocalDate.now().minusYears(10), 1); 
 				executePostTestExpectBadRequest(PATH_BUGS_OPEN_ASSIGN, bugAssignDto2);
 			}
 			@Test
@@ -732,4 +734,56 @@ public class BugsReporterRestApiTest {
 			}
 		}
     }
+	
+	@Nested
+    @DisplayName("Tests for getNonAssignedBugs method in BugsReporterImpl")
+    class BugsReporterImpl_getNonAssignedBugs_test {
+		@Nested
+		@DisplayName("Positive")
+		class BugsReporterImpl_getNonAssignedBugs_Positive {
+			@Test
+			@Order(47)
+			@Sql("fillTables.sql")
+			void getNonAssignedBugs_expect_ok() {
+				programmerRepository.saveAll(programmersList);
+				bugRepository.saveAll(bugsList);
+				List<BugResponseDto> listExp = Arrays.asList(new BugResponseDto(7, Seriousness.CRITICAL, "description", date.minusDays(1000), 0, null, BugStatus.OPENND, OpeningMethod.MANUAL));
+				executeGetTestExpectList(BUGS_NONASSIGNED, BugResponseDto.class, listExp);
+			}
+		}
+	}
+
+	@Nested
+	@DisplayName("Tests for getUnClosedBugsMoreDuration method in BugsReporterImpl")
+	class BugsReporterImpl_getUnClosedBugsMoreDuration_test {
+		@Nested
+		@DisplayName("Positive")
+		class BugsReporterImpl_getUnClosedBugsMoreDuration_Positive {
+			@Test
+			@Order(48)
+			@Sql("fillTables.sql")
+			void getUnClosedBugsMoreDuration_expect_ok() {
+				programmerRepository.saveAll(programmersList);
+				bugRepository.saveAll(bugsList);
+				List<BugResponseDto> listExp3 = Arrays.asList(
+						new BugResponseDto(4, Seriousness.COSMETIC, "description", date.minusDays(3), 2, null, BugStatus.ASSIGNED, OpeningMethod.MANUAL),
+						new BugResponseDto(5, Seriousness.COSMETIC, "description", date.minusDays(3), 2, null, BugStatus.ASSIGNED, OpeningMethod.MANUAL),
+						new BugResponseDto(6, Seriousness.MINOR, "description", date.minusDays(3), 3, null, BugStatus.ASSIGNED, OpeningMethod.MANUAL),
+						new BugResponseDto(7, Seriousness.CRITICAL, "description", date.minusDays(1000), 0, null, BugStatus.OPENND, OpeningMethod.MANUAL)
+						);
+				executeGetTestExpectList(BUGS_WITH_DURATIONS + "?n_days=2", BugResponseDto.class, listExp3);
+			}
+		}
+		@Nested
+		@DisplayName("Negative")
+		class BugsReporterImpl_getUnClosedBugsMoreDuration_Negative {
+			@Test
+			@Order(49)
+			@Sql("fillTables.sql")
+			void getUnClosedBugsMoreDuration_invalideNumberOfDays_expectBadRequest() {
+				executeGetRequestExpectBadRequest(BUGS_WITH_DURATIONS + "?n_days=-1");
+				executeGetRequestExpectBadRequest(BUGS_WITH_DURATIONS + "?n_days=0");
+			}
+		}
+	}
 }

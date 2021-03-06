@@ -7,7 +7,7 @@
 		<artifactId>logs-bugs-reporter</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<artifactId>logs-analizer</artifactId>
+	<artifactId>logs-analyzer</artifactId>
 	<properties>
 		<spring-cloud.version>2020.0.0</spring-cloud.version>
 	</properties>

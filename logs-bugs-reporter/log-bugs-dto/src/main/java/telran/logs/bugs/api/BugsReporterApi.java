@@ -13,5 +13,7 @@ public interface BugsReporterApi {
 	static final String BUGS_LEAST_N_PROGRAMMERS = "/bugs/programmers/least";
 	static final String BUGS_SERIOUSNESS_COUNT = "/bugs/seriousness/count";
 	static final String BUGS_SERIOUSNESS_MOST = "/bugs/seriousness/most";
+	static final String BUGS_WITH_DURATIONS = "/bugs/unclosed";
+	static final String BUGS_NONASSIGNED = "/bugs/nonassigned";
 	
 }

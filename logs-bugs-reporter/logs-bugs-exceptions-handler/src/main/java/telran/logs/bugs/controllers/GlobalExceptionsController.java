@@ -2,7 +2,6 @@ package telran.logs.bugs.controllers;
 
 import javax.validation.ConstraintViolationException;
 
-import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

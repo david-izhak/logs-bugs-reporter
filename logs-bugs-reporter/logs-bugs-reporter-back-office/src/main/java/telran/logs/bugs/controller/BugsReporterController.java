@@ -129,4 +129,20 @@ public class BugsReporterController {
 		log.debug("List of seriousness types with most bugs {}; nTypes: {}", result, nunberSeriousnessTypes);
 		return result;
 	}
+	
+	@GetMapping(BUGS_WITH_DURATIONS)
+	public List<BugResponseDto> getUnClosedBugsMoreDuration(@RequestParam(name = "n_days") @Min(1) int nunberDays) {
+		log.debug("Recieved GET request of unclosed bugs with duration.");
+		List<BugResponseDto> result = bugsReporter.getUnClosedBugsMoreDuration(nunberDays);
+		log.debug("List of unclosed bugs with duration more than {}days", nunberDays);
+		return result;
+	}
+
+	@GetMapping(BUGS_NONASSIGNED)
+	public List<BugResponseDto> getNonAssignedBugs() {
+		log.debug("Recieved GET request of non assigned bugs.");
+		List<BugResponseDto> result = bugsReporter.getNonAssignedBugs();
+		log.debug("List of non assigned bugs {}", result);
+		return result;
+	}
 }

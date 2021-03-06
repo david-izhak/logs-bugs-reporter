@@ -127,16 +127,16 @@ class OpenningBugsTest {
 			.programmer(null)
 			.build();
 	
-	LogDto logDto_NO_EXCEPTION = new LogDto(new Date(), LogType.NO_EXCEPTION, "bug1", 20, "resultTest");
-	Bug bug_NO_EXCEPTION = Bug.builder()
-			.description("AUTHORIZATION_EXCEPTION resultTest")
-			.dateOpen(LocalDate.now())
-			.dateClose(null)
-			.status(BugStatus.ASSIGNED)
-			.seriousness(null)
-			.openningMethod(OpeningMethod.AUTOMATIC)
-			.programmer(programmerMoshe)
-			.build();
+//	LogDto logDto_NO_EXCEPTION = new LogDto(new Date(), LogType.NO_EXCEPTION, "bug1", 20, "resultTest");
+//	Bug bug_NO_EXCEPTION = Bug.builder()
+//			.description("AUTHORIZATION_EXCEPTION resultTest")
+//			.dateOpen(LocalDate.now())
+//			.dateClose(null)
+//			.status(BugStatus.ASSIGNED)
+//			.seriousness(Seriousness.CRITICAL)
+//			.openningMethod(OpeningMethod.AUTOMATIC)
+//			.programmer(programmerMoshe)
+//			.build();
 
 	
 	@Test
@@ -212,11 +212,11 @@ class OpenningBugsTest {
 		assertEquals(bugExpected, bugsList.get(0));
 	}
 
-	@Test
-	@Sql(INIT_SQL)
-	void createSaveRestoreBugTest8() {
-		input.send(new GenericMessage<LogDto>(logDto_NO_EXCEPTION));
-		List<Bug> bugsList = bugs.findAll();
-		assertEquals(0, bugsList.size());
-	}
+//	@Test
+//	@Sql(INIT_SQL)
+//	void createSaveRestoreBugTest8() {
+//		input.send(new GenericMessage<LogDto>(logDto_NO_EXCEPTION));
+//		List<Bug> bugsList = bugs.findAll();
+//		assertEquals(0, bugsList.size());
+//	}
 }
