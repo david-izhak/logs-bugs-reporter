@@ -11,21 +11,21 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import lombok.extern.slf4j.Slf4j;
 import telran.logs.bugs.random.RandomLogs;
 import telran.logs.bugs.dto.*;
 
 @ExtendWith(SpringExtension.class)
 @EnableAutoConfiguration
 @ContextConfiguration(classes = RandomLogs.class)
+@Slf4j
 public class RandomLogsTest {
-	static Logger LOG = LoggerFactory.getLogger(RandomLogsTest.class);
+//	TODO move properties to applecation.properties
 	private static final String AUTHENTICATION_ARTIFACT = "authentication";
 	private static final String AUTHORIZATION_ARTIFACT = "authorization";
 	private static final String CLASS_ARTIFACT = "class";
@@ -73,7 +73,7 @@ public class RandomLogsTest {
 		Map<LogType, Long> logTypeOccurrences = 
 				logs.stream().collect(Collectors.groupingBy(l -> l.logType, Collectors.counting()));
 		logTypeOccurrences.forEach((k, v) -> {
-			LOG.debug("log type: {}; count of occurrences: {}", k, v);
+			log.debug("log type: {}; count of occurrences: {}", k, v);
 		});
 		
 	}

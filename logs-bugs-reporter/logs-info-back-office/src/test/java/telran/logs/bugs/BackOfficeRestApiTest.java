@@ -22,6 +22,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
+import telran.logs.bugs.api.LogsInfoApi;
 import telran.logs.bugs.dto.ArtifactCount;
 import telran.logs.bugs.dto.LogDto;
 import telran.logs.bugs.dto.LogType;
@@ -33,7 +34,7 @@ import telran.logs.bugs.repo.LogRepository;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @Slf4j
-public class BackOfficeRestApiTest {
+public class BackOfficeRestApiTest implements LogsInfoApi {
 
 	@Autowired
 	WebTestClient webTestClient;
@@ -41,17 +42,7 @@ public class BackOfficeRestApiTest {
 	@Autowired
 	LogRepository logRepository;
 
-	@Value("${path-get_all_logs}")
-	String pathGetAllLogs;
-
-	@Value("${path-get_logs_by_type-base}")
-	String pathGetLogsByTypeBase;
-
-	@Value("${back-office-test-path-get_all_exceptions}")
-	String pathGetAllExceptions;
-
-	@Value("${app-number-logs}")
-	int numberLogs;
+	String pathGetLogsByTypeBase = LOGS_TYPE + "?type=";
 
 //	Data set
 	static Date DATE_TIME = new Date();
@@ -138,7 +129,7 @@ public class BackOfficeRestApiTest {
 
 	@Test
 	void getAllLogsTest() {
-		List<LogDto> list = queryListLogDto(pathGetAllLogs);
+		List<LogDto> list = queryListLogDto(LOGS);
 		assertEquals(18, list.size());
 	}
 
@@ -171,14 +162,14 @@ public class BackOfficeRestApiTest {
 
 	@Test
 	void getLogsAllExceptionsTest() {
-		List<LogDto> list = queryListLogDto(pathGetAllExceptions);
+		List<LogDto> list = queryListLogDto(LOGS_EXCEPTIONS);
 		list.forEach(logDto -> assertNotEquals(logDto, LogType.NO_EXCEPTION));
 		log.debug("===> Test: asserted query for all exceptions. Size of the responds list {}.", list.size());
 	}
 
 	@Test
 	void getDistribution() {
-		executeTest("/logs/distribution", LogTypeCount[].class, listExp);
+		executeTest(LOGS_DISTRIBUTION, LogTypeCount[].class, listExp);
 	}
 
 	@Nested
