@@ -17,7 +17,6 @@ import telran.logs.bugs.dto.LogDto;
 @Slf4j
 public class EmailNotifierService {
 
-
 	@Value("${app-email-notifier-subject:exception}")
 	String subject;
 
@@ -59,19 +58,6 @@ public class EmailNotifierService {
 		}
 	}
 
-	private String  messageTextFormatter(LogDto logDto, MailTo mailTo) {
-		StringBuilder stb = new StringBuilder();
-		log.debug(">>>> called messegeTexFormatter() method");
-		String line1 = String.format("%nHello, %s%n", mailTo.text);
-		String line2 = String.format("Exception has been received %n");
-		String line3 = String.format("Date:%s%n", logDto.dateTime);
-		String line4 = String.format("Exception type: %s%n", logDto.logType);
-		String line5 = String.format("Artifact: %s%n", logDto.artifact);
-		String line6 = String.format("Explanation: %s%n", logDto.result);
-		return stb.append(line1).append(line2).append(line3).append(line4).append(line5).append(line6).toString();
-	}
-
-
 	private void sendMail(LogDto logDto, String email, MailTo recipient) {
 		log.debug(">>>> called sendMail() method");
 		String messegeText = messageTextFormatter (logDto, recipient);
@@ -85,5 +71,17 @@ public class EmailNotifierService {
 		
 		mailSender.send(message);
 		log.debug(">>>> sendMail() method finished");
+	}
+
+	private String  messageTextFormatter(LogDto logDto, MailTo mailTo) {
+		StringBuilder stb = new StringBuilder();
+		log.debug(">>>> called messegeTexFormatter() method");
+		String line1 = String.format("%nHello, %s%n", mailTo.text);
+		String line2 = String.format("Exception has been received %n");
+		String line3 = String.format("Date:%s%n", logDto.dateTime);
+		String line4 = String.format("Exception type: %s%n", logDto.logType);
+		String line5 = String.format("Artifact: %s%n", logDto.artifact);
+		String line6 = String.format("Explanation: %s%n", logDto.result);
+		return stb.append(line1).append(line2).append(line3).append(line4).append(line5).append(line6).toString();
 	}
 }

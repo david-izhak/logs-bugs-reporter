@@ -7,12 +7,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+import telran.logs.bugs.api.EmailProviderApi;
 import telran.logs.bugs.jpa.entities.Artifact;
 import telran.logs.bugs.repo.ArtifactRepository;
 
 @SpringBootApplication
 @RestController
-public class EmailProviderAppl {
+@Slf4j
+public class EmailProviderAppl implements EmailProviderApi {
 	
 	@Autowired
 	ArtifactRepository artifactsRepo;
@@ -21,9 +24,12 @@ public class EmailProviderAppl {
 		SpringApplication.run(EmailProviderAppl.class, args);
 	}
 	
-	@GetMapping("/email/{artifact}")
-	String getEmail (@PathVariable(name = "artifact") String artifact) {
+	@GetMapping(EMAIL_ARTIFACT)
+	String getEmail (@PathVariable(name = PATHVARIABLE_NAME) String artifact) {
+		log.debug("Resieved GET query with an artifact {}", artifact);
 		Artifact artifactEntities = artifactsRepo.findById(artifact).orElse(null);
-		return  artifactEntities == null ? "No email" : artifactEntities.getProgrammer().getEmail();
+		String email =   artifactEntities == null ? ANSWER_IF_ARTIFACT_NO_EXISTS : artifactEntities.getProgrammer().getEmail();
+		log.debug("Sent the answer {}", email);
+		return  email;
 	}
 }

@@ -60,7 +60,7 @@
 		<module>logs-bugs-jpa-entities</module>
 		<module>logs-bugs-openning</module>
 		<module>logs-bugs-email-provider</module>
-		<module>logs-bygs-email-notifier</module>
+		<module>logs-bugs-email-notifier</module>
 		<module>logs-bugs-assigner-mail-provider</module>
 		<module>logs-info-back-office</module>
 		<module>logs-random-generator</module>

@@ -21,5 +21,4 @@ public class BugDto {
 	public String description;
 	
 	public LocalDate dateOpen;
-	
 }

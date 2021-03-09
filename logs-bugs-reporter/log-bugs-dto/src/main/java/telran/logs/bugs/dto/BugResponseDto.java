@@ -13,9 +13,7 @@ public class BugResponseDto extends BugAssignDto {
 
 	public BugResponseDto(long bugId, Seriousness seriousness, String description, LocalDate dateOpen, @Min(1) long programmer,
 			LocalDate dateClose, BugStatus status, OpeningMethod openingMethod) {
-		
 		super(seriousness, description, dateOpen, programmer);
-		
 		this.bugId = bugId;
 		this.dateClose = dateClose;
 		this.status = status;

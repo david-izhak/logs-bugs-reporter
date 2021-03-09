@@ -7,7 +7,7 @@
 		<artifactId>logs-bugs-reporter</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<artifactId>logs-bygs-email-notifier</artifactId>
+	<artifactId>logs-bugs-email-notifier</artifactId>
 	<properties>
 		<java.version>14</java.version>
 		<spring-cloud.version>2020.0.1</spring-cloud.version>
