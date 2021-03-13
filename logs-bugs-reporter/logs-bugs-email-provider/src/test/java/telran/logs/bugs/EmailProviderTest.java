@@ -40,6 +40,6 @@ public class EmailProviderTest {
 	@Sql(INIT_SQL)
 	void emailNotExisting() {
 		webTestClient.get().uri(pathWithNoExistArtifact)
-		.exchange().expectStatus().isOk().expectBody(String.class).isEqualTo("No email");
+		.exchange().expectStatus().isOk().expectBody(String.class).isEqualTo("No such artifact and email");
 	}
 }

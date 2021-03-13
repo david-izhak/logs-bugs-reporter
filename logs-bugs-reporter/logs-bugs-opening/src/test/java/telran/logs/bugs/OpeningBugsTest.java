@@ -29,7 +29,7 @@ import telran.logs.bugs.services.LogDtoToBugConverterInterface;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @Import(TestChannelBinderConfiguration.class)
-class OpenningBugsTest {
+class OpeningBugsTest {
 	
 	final String INIT_SQL = "fillTables.sql";
 	

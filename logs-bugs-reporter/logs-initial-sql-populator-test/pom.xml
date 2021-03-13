@@ -7,13 +7,19 @@
 		<artifactId>logs-bugs-reporter</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<artifactId>logs-bugs-email-provider</artifactId>
-	<description>Providing email of Programmer according to artifact</description>
+	<artifactId>logs-initial-sql-populator-test</artifactId>
 	<dependencies>
 		<dependency>
 			<groupId>telran.logs.bugs</groupId>
 			<artifactId>logs-bugs-jpa-entities</artifactId>
 			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream</artifactId>
+			<scope>test</scope>
+			<classifier>test-binder</classifier>
+			<type>test-jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -26,12 +32,15 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>2020.0.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

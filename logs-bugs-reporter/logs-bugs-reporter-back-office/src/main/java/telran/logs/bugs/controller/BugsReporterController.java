@@ -123,18 +123,18 @@ public class BugsReporterController {
 	}
 	
 	@GetMapping(BUGS_SERIOUSNESS_MOST)
-	public List<Seriousness> getSeriousnessTypesWithMostBugs(@RequestParam(name = "n_seriousness") @Min(1) int nunberSeriousnessTypes) {
+	public List<Seriousness> getSeriousnessTypesWithMostBugs(@RequestParam(name = "n_seriousness") @Min(1) int numberSeriousnessTypes) {
 		log.debug("Recieved GET request of Seriousness types with most count of bugs");
-		List<Seriousness> result = bugsReporter.getSeriousnessTypesWithMostBugs(nunberSeriousnessTypes);
-		log.debug("List of seriousness types with most bugs {}; nTypes: {}", result, nunberSeriousnessTypes);
+		List<Seriousness> result = bugsReporter.getSeriousnessTypesWithMostBugs(numberSeriousnessTypes);
+		log.debug("List of seriousness types with most bugs {}; nTypes: {}", result, numberSeriousnessTypes);
 		return result;
 	}
 	
 	@GetMapping(BUGS_WITH_DURATIONS)
-	public List<BugResponseDto> getUnClosedBugsMoreDuration(@RequestParam(name = "n_days") @Min(1) int nunberDays) {
+	public List<BugResponseDto> getUnClosedBugsMoreDuration(@RequestParam(name = "n_days") @Min(1) int numberDays) {
 		log.debug("Recieved GET request of unclosed bugs with duration.");
-		List<BugResponseDto> result = bugsReporter.getUnClosedBugsMoreDuration(nunberDays);
-		log.debug("List of unclosed bugs with duration more than {}days", nunberDays);
+		List<BugResponseDto> result = bugsReporter.getUnClosedBugsMoreDuration(numberDays);
+		log.debug("List of unclosed bugs with duration more than {}days", numberDays);
 		return result;
 	}
 

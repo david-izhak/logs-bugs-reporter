@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  analyzer:
+    build: logs-analyzer
+  programmer-email-provider:
+    ports:
+    - 8686:8686
+    build: logs-bugs-email-provider
+  assigner-email-provider:
+    ports:
+    - 8585:8585
+    build: logs-bugs-assigner-mail-provider
+  email-notifier:
+    build: logs-bugs-email-notifier
+  bugs-opening:
+    build: logs-bugs-opening
+  reporter-back-office:
+    ports:
+    - 8484:8484
+    build: logs-bugs-reporter-back-office
+  db-populator:
+    build: logs-db-populator
+  logs-info-back-office:
+    ports:
+    - 8282:8282
+    build: logs-info-back-office
+    

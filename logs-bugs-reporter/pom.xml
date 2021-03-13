@@ -41,30 +41,28 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+	<profiles>
+		<profile>
+			<modules>
+				<module>log-bugs-dto</module>
+				<module>logs-bugs-mongo-document</module>
+				<module>logs-provider</module>
+				<module>logs-db-populator</module>
+				<module>logs-analyzer</module>
+				<module>logs-bugs-jpa-entities</module>
+				<module>logs-bugs-opening</module>
+				<module>logs-bugs-email-provider</module>
+				<module>logs-bugs-email-notifier</module>
+				<module>logs-bugs-assigner-mail-provider</module>
+				<module>logs-info-back-office</module>
+				<module>logs-random-generator</module>
+				<module>logs-bugs-reporter-back-office</module>
+				<module>logs-bugs-exceptions-handler</module>
+			</modules>
+		</profile>
+	</profiles>
 
 	<modules>
-		<module>log-bugs-dto</module>
-		<module>logs-bugs-mongo-document</module>
-		<module>logs-provider</module>
-		<module>logs-db-populator</module>
-		<module>logs-analyzer</module>
-		<module>logs-bugs-jpa-entities</module>
-		<module>logs-bugs-openning</module>
-		<module>logs-bugs-email-provider</module>
-		<module>logs-bugs-email-notifier</module>
-		<module>logs-bugs-assigner-mail-provider</module>
-		<module>logs-info-back-office</module>
-		<module>logs-random-generator</module>
-		<module>logs-bugs-reporter-back-office</module>
-		<module>logs-bugs-exceptions-handler</module>
+		<module>logs-initial-sql-populator-test</module>
 	</modules>
 </project>

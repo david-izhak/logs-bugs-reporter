@@ -2,11 +2,14 @@ package telran.logs.bugs.controllers;
 
 import javax.validation.ConstraintViolationException;
 
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ServerWebInputException;
 
 import lombok.extern.slf4j.Slf4j;
 import telran.logs.bugs.exceptions.DuplicatedKeyException;
@@ -29,11 +32,23 @@ public class GlobalExceptionsController {
 		return processingException(e);
 	}
 	
-//	@ExceptionHandler(ConversionFailedException.class)
-//	@ResponseStatus(HttpStatus.BAD_REQUEST)
-//	String conversionFailedExceptionHandler(ConversionFailedException e) {
-//		return processingException(e);
-//	}
+	@ExceptionHandler(WebExchangeBindException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	String webExchangeBindExceptionHandler(WebExchangeBindException e) {
+		return processingException(e);
+	}
+	
+	@ExceptionHandler(ServerWebInputException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	String serverWebInputExceptionHandler(ServerWebInputException e) {
+		return processingException(e);
+	}
+	
+	@ExceptionHandler(ConversionFailedException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	String conversionFailedExceptionHandler(ConversionFailedException e) {
+		return processingException(e);
+	}
 
 	@ExceptionHandler(DuplicatedKeyException.class)
 	@ResponseStatus(HttpStatus.CONFLICT)

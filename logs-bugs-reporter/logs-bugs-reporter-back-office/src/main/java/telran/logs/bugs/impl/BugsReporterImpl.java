@@ -4,23 +4,15 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolationException;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.extern.slf4j.Slf4j;
 import telran.logs.bugs.dto.ArtifactDto;
 import telran.logs.bugs.dto.AssignBugData;
 import telran.logs.bugs.dto.BugAssignDto;
@@ -44,7 +36,6 @@ import telran.logs.bugs.jpa.repo.BugRepository;
 import telran.logs.bugs.jpa.repo.ProgrammerRepository;
 
 @Service
-@Slf4j
 public class BugsReporterImpl implements BugsReporter {
 
 	BugRepository bugRepository;
@@ -58,6 +49,7 @@ public class BugsReporterImpl implements BugsReporter {
 		this.artifactRepository = artifactRepository;
 		this.programmerRepository = programmerRepository;
 	}
+	String messageIfProgrammerNotFound = "Assigning can't be done - no programmer with ID: %s";
 
 	private BugResponseDto toBugResponseDto(Bug bug) {
 		Programmer programmer = bug.getProgrammer();
@@ -70,6 +62,17 @@ public class BugsReporterImpl implements BugsReporter {
 
 	private List<BugResponseDto> toListBugResponseDto(List<Bug> bugs) {
 		return bugs.stream().map(this::toBugResponseDto).collect(Collectors.toList());
+	}
+	
+	private Programmer getProgrammerById(long programmerId) {
+		return programmerRepository.findById(programmerId).orElse(null);
+	}
+	
+	private void checkProgrammerOnNull(long programmerId, Programmer programmer) {
+		if (programmer == null) {
+			throw new NotFoundException(
+					String.format(messageIfProgrammerNotFound, programmerId));
+		}
 	}
 
 	@Override
@@ -91,11 +94,9 @@ public class BugsReporterImpl implements BugsReporter {
 			throw new DuplicatedKeyException(
 					String.format("Artifact with ID: %s, olready exsists", artifactDto.artifactId));
 		}
-		Programmer programmer = programmerRepository.findById(artifactDto.programmer).orElse(null);
-		if (programmer == null) {
-			throw new NotFoundException(
-					String.format("Assigning can't be done - no programmer with ID: %s", artifactDto.programmer));
-		}
+		long programmerId = artifactDto.programmer;
+		Programmer programmer = getProgrammerById(programmerId);
+		checkProgrammerOnNull(programmerId, programmer);
 		artifactRepository.save(new Artifact(artifactDto.artifactId, programmer));
 		return artifactDto;
 	}
@@ -106,13 +107,7 @@ public class BugsReporterImpl implements BugsReporter {
 		LocalDate dateOpen = bugDto.dateOpen != null ? bugDto.dateOpen : LocalDate.now();
 		if (dateOpen.isAfter(LocalDate.now())) {
 			throw new ConstraintViolationException(
-					String.format("Date the bug was opened %s in the future", bugDto.dateOpen), null); // TODO null is
-																										// not right.
-																										// Create
-																										// extension of
-																										// ConstraintViolationException
-																										// and replays
-																										// null.
+					String.format("Date the bug was opened %s in the future", bugDto.dateOpen), null);
 		}
 		if (dateOpen.isBefore(LocalDate.now().minusYears(20))) {
 			throw new ConstraintViolationException(
@@ -130,20 +125,12 @@ public class BugsReporterImpl implements BugsReporter {
 	@Transactional
 	public BugResponseDto openAndAssignBug(BugAssignDto bugDto) {
 		LocalDate dateOpen = bugDto.dateOpen != null ? bugDto.dateOpen : LocalDate.now();
-		Programmer programmer = programmerRepository.findById(bugDto.programmerId).orElse(null);
-		if (programmer == null) {
-			throw new NotFoundException(
-					String.format("Assigning can't be done - no programmer with ID: %s", bugDto.programmerId));
-		}
+		long programmerId = bugDto.programmerId;
+		Programmer programmer = getProgrammerById(programmerId);
+		checkProgrammerOnNull(programmerId, programmer);
 		if (dateOpen.isAfter(LocalDate.now())) {
 			throw new ConstraintViolationException(
-					String.format("Date the bug was opened %s in the future", bugDto.dateOpen), null); // TODO null is
-																										// not right.
-																										// Create
-																										// extension of
-																										// ConstraintViolationException
-																										// and replays
-																										// null.
+					String.format("Date the bug was opened %s in the future", bugDto.dateOpen), null);
 		}
 		if (dateOpen.isBefore(LocalDate.now().minusYears(20))) {
 			throw new ConstraintViolationException(
@@ -160,11 +147,9 @@ public class BugsReporterImpl implements BugsReporter {
 	@Override
 	@Transactional
 	public void assignBug(AssignBugData assignData) {
-		Programmer programmer = programmerRepository.findById(assignData.programmerId).orElse(null);
-		if (programmer == null) {
-			throw new NotFoundException(
-					String.format("Assigning can't be done - no programmer with ID: %s", assignData.programmerId));
-		}
+		long programmerId = assignData.programmerId;
+		Programmer programmer = getProgrammerById(programmerId);
+		checkProgrammerOnNull(programmerId, programmer);
 		Bug bug = bugRepository.findById(assignData.bugId).orElse(null);
 		if (bug == null) {
 			throw new NotFoundException(
@@ -203,8 +188,7 @@ public class BugsReporterImpl implements BugsReporter {
 
 	@Override
 	public List<BugResponseDto> getBugsProgrammer(long programmerId) {
-		Programmer programmer = programmerRepository.findById(programmerId).orElse(null);
-		if (programmer == null) {
+		if (getProgrammerById(programmerId) == null) {
 			throw new NotFoundException(String.format("Can't get bugs - no programmer with ID: %s", programmerId));
 		}
 		List<Bug> bugs = bugRepository.findByProgrammerId(programmerId);
@@ -213,24 +197,21 @@ public class BugsReporterImpl implements BugsReporter {
 
 	@Override
 	public List<EmailBugsCount> getEmailBugsCounts() {
-		List<EmailBugsCount> result = bugRepository.emailBugsCounts();
-		return result;
+		return bugRepository.emailBugsCounts();
 	}
 
 	@Override
 	public List<String> getProgrammersMostBugs(int nProgrammer) {
 //		List<String> result = bugRepository.programmersMostBugs(nProgrammer); //		Variant 1 - with native query
 		Pageable pageable = PageRequest.of(0, nProgrammer); // Variant 2 - with JPQL
-		List<String> result = bugRepository.programmersMostBugs(pageable);
-		return result;
+		return bugRepository.programmersMostBugs(pageable);
 	}
 
 	@Override
 	public List<String> getProgrammersLeastBugs(int nProgrammer) {
 //		List<String> result = bugRepository.programmersLeastBugs(nProgrammer); //		Variant 1 - with native query
 		Pageable pageable = PageRequest.of(0, nProgrammer); // Variant 2 - with JPQL
-		List<String> result = bugRepository.programmersLeastBugs(pageable);
-		return result;
+		return bugRepository.programmersLeastBugs(pageable);
 	}
 
 	@Override
@@ -241,47 +222,9 @@ public class BugsReporterImpl implements BugsReporter {
 	}
 
 	@Override
-	public List<Seriousness> getSeriousnessTypesWithMostBugs(int nunberSeriousnessTypes) {
-//		List<Seriousness> result = bugRepository.seriousnessTypesWithMostCountOfBugs(nunberSeriousnessTypes);
-		Pageable pageable = PageRequest.of(0, nunberSeriousnessTypes); // Variant 2 - with JPQL
+	public List<Seriousness> getSeriousnessTypesWithMostBugs(int numberSeriousnessTypes) {
+		Pageable pageable = PageRequest.of(0, numberSeriousnessTypes); // Variant 2 - with JPQL
 		List<Seriousness> result = bugRepository.seriousnessTypesWithMostCountOfBugs(pageable);
-		return result;
+		return bugRepository.seriousnessTypesWithMostCountOfBugs(pageable);
 	}
-
-	@PostConstruct
-	void populatingDb() {
-		List<Programmer> programmersList = populateProgrammers();
-		populateArtifacts(programmersList);
-	}
-
-	@Value("${app-emai-prefix}")
-	String emaiPrefix;
-	@Value("${app-emai-postfix}")
-	String emaiPostfix;
-	@Value("${app-programmers-number}")
-	int programmersNumber;
-	@Value("${app-initial-programmer-id}")
-	int initialProgrammerId;
-
-	@Transactional
-	private List<Programmer> populateProgrammers() {
-		log.debug("populatingDb===> Start populatin programmers to DB. Shold be {}.", programmersNumber);
-		for (int i = initialProgrammerId; i < initialProgrammerId + programmersNumber; i++) {
-			programmerRepository.save(new Programmer(i, "Programmer" + i, emaiPrefix + "+" + i + emaiPostfix));
-		}
-		log.debug("populatingDb===> In DB total saved {} programmers", programmerRepository.count());
-		return programmerRepository.findAll();
-	}
-
-	@Value("${app-artifacts}")
-	String[] artifacts;
-	@Transactional
-	private void populateArtifacts(List<Programmer> programmersList) {
-		log.debug("populatingDb===> Start populatin artifacts to DB. Shold be {}.", artifacts.length);
-		for(int i = 0; i < artifacts.length; i++) {
-			artifactRepository.save(new Artifact(artifacts[i], programmersList.get(i > 14 ? 0 : i)));
-		}
-		log.debug("populatingDb===> In repo total saved {} artifacts", artifactRepository.count());
-	}
-
 }

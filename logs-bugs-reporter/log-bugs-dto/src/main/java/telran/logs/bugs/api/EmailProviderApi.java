@@ -1,7 +1,5 @@
 package telran.logs.bugs.api;
 
-import org.springframework.web.bind.annotation.PathVariable;
-
 public interface EmailProviderApi {
 //	String variables.
 	String PATHVARIABLE_NAME  = "artifact";
