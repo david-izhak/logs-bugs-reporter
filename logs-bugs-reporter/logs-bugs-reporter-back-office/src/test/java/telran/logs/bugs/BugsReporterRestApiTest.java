@@ -50,6 +50,8 @@ import static telran.logs.bugs.api.BugsReporterApi.*;
 @AutoConfigureDataJpa
 @TestMethodOrder(OrderAnnotation.class)
 public class BugsReporterRestApiTest {
+	
+	private static final String SQL_PATH = "classpath:fillTables.sql";
 
 	@NoArgsConstructor
 	@AllArgsConstructor
@@ -226,7 +228,7 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_assignBug_Positive {
 			@Test
 			@Order(1)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void assign_opened_bug_to_programmer_by_id_expect_ok() {
 				programmerRepository.save(programmersList.get(0));
 				bugRepository.save(bug1);
@@ -285,7 +287,7 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_getBugsProgrammer_Positive {
 			@Test
 			@Order(6)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void get_all_bugs_of_programmer_by_id_expect_ok() {
 				programmerRepository.save(programmersList.get(0));
 				bugRepository.save(bugsList.get(0));
@@ -322,7 +324,7 @@ public class BugsReporterRestApiTest {
 		@Test
 		@Order(9)
 		@DisplayName("Test getEmailBugsCount method of controller")
-		@Sql("fillTables.sql")
+		@Sql(SQL_PATH)
 		void get_emails_of_programmers_with_counts_of_bugs_expect_ok() {
 			programmerRepository.saveAll(programmersList);
 			bugRepository.saveAll(bugsList);
@@ -339,7 +341,7 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_closeBug_Positive {
 			@Test
 			@Order(10)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void close_bug_expect_ok() {
 				bugRepository.save(bug1);
 				executePutTest(PATH_BUGS_CLOSE_DATA, closeBugData);
@@ -347,7 +349,7 @@ public class BugsReporterRestApiTest {
 			}
 			@Test
 			@Order(11)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void close_bug_with_date_null_expect_ok() {
 				bugRepository.save(bug1);
 				CloseBugData closeBugData1 = new CloseBugData(1, null, "closeBugData_description");
@@ -399,7 +401,7 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_getProgrammersMostBugs_Negative {
 			@Test
 			@Order(15)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void get_programmers_with_most_count_of_bugs_expect_BadRequest() {
 				programmerRepository.saveAll(programmersList);
 				bugRepository.saveAll(bugsList);
@@ -415,7 +417,7 @@ public class BugsReporterRestApiTest {
 		@Test
 		@Order(16)
 		@DisplayName("Distribution of bugs according seriousness")
-		@Sql("fillTables.sql")
+		@Sql(SQL_PATH)
 		void get_distribution_of_seriousness_expect_ok() {
 			programmerRepository.saveAll(programmersList);
 			bugRepository.saveAll(bugsList);
@@ -488,14 +490,14 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_addProgrammer_Positive {
 			@Test
 			@Order(21)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void open_bug_and_assign_to_programmer_expect_ok() {
 				programmerRepository.save(programmersList.get(0));
 				executePostTest(PATH_BUGS_OPEN_ASSIGN, BugResponseDto.class, bugAssignDto1, bugResponseDto1);
 			}
 			@Test
 			@Order(22)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void open_bug_and_assign_to_programmer_with_date_null_expect_ok() {
 				programmerRepository.save(programmersList.get(0));
 				BugAssignDto bugAssignDto2 = new BugAssignDto(Seriousness.BLOCKING, "description", null, 1);
@@ -567,7 +569,7 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_addProgrammer_Positive {
 			@Test
 			@Order(30)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void create_new_programmers_in_db_expect_ok() {
 				executePostTest(PATH_BUGS_PROGRAMMERS, ProgrammerDto.class, programmerDto, programmerDto);
 				Programmer programmerFromDb = programmerRepository.findAll().get(0);
@@ -581,7 +583,7 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_addProgrammer_Negative {
 			@Test
 			@Order(31)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void create_new_programmers_in_db_duplikat_programmer_id_expect_4xxClientError() {
 				programmerRepository.save(programmersList.get(0));
 				webTestClient.post().uri(PATH_BUGS_PROGRAMMERS).bodyValue(programmerDto).exchange().expectStatus()
@@ -589,7 +591,7 @@ public class BugsReporterRestApiTest {
 			}
 			@Test
 			@Order(32)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void create_new_programmers_in_db_invalid_id_expect_BadRequest() {
 				ProgrammerDto programmerDto1 = new ProgrammerDto(-1, "Bob", "bob@gmail.com");
 				executePostTestExpectBadRequest(PATH_BUGS_PROGRAMMERS, programmerDto1);
@@ -598,7 +600,7 @@ public class BugsReporterRestApiTest {
 			}
 			@Test
 			@Order(33)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void create_new_programmers_in_db_empty_name_expect_BadRequest() {
 				ProgrammerDto programmerDto1 = new ProgrammerDto(1, "", "bob@gmail.com");
 				executePostTestExpectBadRequest(PATH_BUGS_PROGRAMMERS, programmerDto1);
@@ -607,7 +609,7 @@ public class BugsReporterRestApiTest {
 			}
 			@Test
 			@Order(34)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void create_new_programmers_in_db_invalid_email_expect_BadRequest() {
 				ProgrammerDto programmerDto1 = new ProgrammerDto(1, "Bob", "bobgmail.com");
 				executePostTestExpectBadRequest(PATH_BUGS_PROGRAMMERS, programmerDto1);
@@ -629,7 +631,7 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_addArtifact_Positive {
 			@Test
 			@Order(35)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void create_new_artifact_in_db_expect_ok() {
 				programmerRepository.save(programmersList.get(0));
 				executePostTest(PATH_BUGS_ARTIFACT, ArtifactDto.class, artifactDto, artifactDto);
@@ -643,7 +645,7 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_addArtifact_Negative {
 			@Test
 			@Order(36)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void create_new_artifact_in_db_duplikat_artifact_id_expect_4xxClientError() {
 				programmerRepository.save(programmersList.get(0));
 				artifactRepository.save(new Artifact("artifact_test", programmersList.get(0)));
@@ -652,7 +654,7 @@ public class BugsReporterRestApiTest {
 			}
 			@Test
 			@Order(37)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void create_new_artifac_in_db_empty_id_expect_BadRequest() {
 				ArtifactDto artifactDto1 = new ArtifactDto("", 1);
 				executePostTestExpectBadRequest(PATH_BUGS_ARTIFACT, artifactDto1);
@@ -661,7 +663,7 @@ public class BugsReporterRestApiTest {
 			}
 			@Test
 			@Order(38)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void create_new_artifac_in_db_with_invalid_programmer_id_expect_BadRequest() {
 				ArtifactDto artifactDto1 = new ArtifactDto("artifact_test", -1);
 				executePostTestExpectBadRequest(PATH_BUGS_ARTIFACT, artifactDto1);
@@ -670,7 +672,7 @@ public class BugsReporterRestApiTest {
 			}
 			@Test
 			@Order(46)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void create_new_artifac_in_db_with_not_exists_programmer_id_expect_NotFound() {
 				programmerRepository.saveAll(programmersList);
 				ArtifactDto artifactDto1 = new ArtifactDto("artifact_test", 100);
@@ -687,13 +689,13 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_addArtifact_Positive {
 			@Test
 			@Order(39)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void open_new_bug_expect_ok() {
 				executePostTest(PATH_BUGS_OPEN, BugResponseDto.class, bugDto, bugResponseDto);
 			}
 			@Test
 			@Order(40)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void open_new_bug_with_date_null_expect_ok() {
 				BugDto bugDto1 = new BugDto(Seriousness.BLOCKING, "description", null);
 				executePostTest(PATH_BUGS_OPEN, BugResponseDto.class, bugDto1, bugResponseDto);
@@ -743,7 +745,7 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_getNonAssignedBugs_Positive {
 			@Test
 			@Order(47)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void getNonAssignedBugs_expect_ok() {
 				programmerRepository.saveAll(programmersList);
 				bugRepository.saveAll(bugsList);
@@ -761,7 +763,7 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_getUnClosedBugsMoreDuration_Positive {
 			@Test
 			@Order(48)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void getUnClosedBugsMoreDuration_expect_ok() {
 				programmerRepository.saveAll(programmersList);
 				bugRepository.saveAll(bugsList);
@@ -779,7 +781,7 @@ public class BugsReporterRestApiTest {
 		class BugsReporterImpl_getUnClosedBugsMoreDuration_Negative {
 			@Test
 			@Order(49)
-			@Sql("fillTables.sql")
+			@Sql(SQL_PATH)
 			void getUnClosedBugsMoreDuration_invalideNumberOfDays_expectBadRequest() {
 				executeGetRequestExpectBadRequest(BUGS_WITH_DURATIONS + "?n_days=-1");
 				executeGetRequestExpectBadRequest(BUGS_WITH_DURATIONS + "?n_days=0");

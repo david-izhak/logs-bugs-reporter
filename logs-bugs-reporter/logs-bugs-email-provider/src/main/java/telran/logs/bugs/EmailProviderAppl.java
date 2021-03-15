@@ -28,7 +28,7 @@ public class EmailProviderAppl implements EmailProviderApi {
 	String getEmail (@PathVariable(name = PATHVARIABLE_NAME) String artifact) {
 		log.debug("Resieved GET query with an artifact {}", artifact);
 		Artifact artifactEntities = artifactsRepo.findById(artifact).orElse(null);
-		String email =   artifactEntities == null ? ANSWER_IF_ARTIFACT_NO_EXISTS : artifactEntities.getProgrammer().getEmail();
+		String email =   artifactEntities == null ? ANSWER_IF_APPROPRIATE_NO_EXISTS : artifactEntities.getProgrammer().getEmail();
 		log.debug("Sent the answer {}", email);
 		return  email;
 	}

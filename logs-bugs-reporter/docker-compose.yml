@@ -1,27 +1,61 @@
 version: '3.8'
+    
 services:
   analyzer:
+    environment:
+      - password-karafka=${password-karafka}
+      - username-karafka=${username-karafka}
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.001'
+#          memory: 300M
+#        reservations:
+#          cpus: '0.0001'
+#          memory: 50M
     build: logs-analyzer
   programmer-email-provider:
     ports:
-    - 8686:8686
+      - 8686:8686
+    environment:
+      - postgres-username=${postgres-username}
+      - postgres-password=${postgres-password}
     build: logs-bugs-email-provider
   assigner-email-provider:
     ports:
-    - 8585:8585
+      - 8585:8585
     build: logs-bugs-assigner-mail-provider
   email-notifier:
+    environment:
+      - password-karafka=${password-karafka}
+      - username-karafka=${username-karafka}
+      - gmail-password=${gmail-password}
+      - gmail-username=${gmail-username}
     build: logs-bugs-email-notifier
   bugs-opening:
+    environment:
+      - password-karafka=${password-karafka}
+      - username-karafka=${username-karafka}
     build: logs-bugs-opening
   reporter-back-office:
     ports:
-    - 8484:8484
+      - 8484:8484
+    environment:
+      - postgres-username=${postgres-username}
+      - postgres-password=${postgres-password}
     build: logs-bugs-reporter-back-office
   db-populator:
+    environment:
+      - password-karafka=${password-karafka}
+      - username-karafka=${username-karafka}
+      - mongo-username=${mongo-username}
+      - mongo-password=${mongo-password}
     build: logs-db-populator
   logs-info-back-office:
     ports:
-    - 8282:8282
+      - 8282:8282
+    environment:
+      - mongo-username=${mongo-username}
+      - mongo-password=${mongo-password}
     build: logs-info-back-office
     

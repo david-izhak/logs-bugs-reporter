@@ -57,7 +57,7 @@ public class EmailNotifierTest {
 	
 	@Test
 	void assignerFlow() throws MessagingException {
-		when(client.getEmailByArtifact(anyString())).thenReturn("");
+		when(client.getEmailByArtifact(anyString())).thenReturn("No such artifact and email");
 		when(client.getAssignerMail()).thenReturn(EMAIL);
 		LogDto logException = new LogDto(new Date(), LogType.AUTHENTICATION_EXCEPTION, "artifact000", 0, "result");
 		input.send(new GenericMessage<LogDto>(logException));

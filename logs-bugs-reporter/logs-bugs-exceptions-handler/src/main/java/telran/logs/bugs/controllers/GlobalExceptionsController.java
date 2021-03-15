@@ -68,11 +68,11 @@ public class GlobalExceptionsController {
 		return processingException(serverException);
 	}
 	
-	@ExceptionHandler(RuntimeException.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	String runtimeExceptionHandler (RuntimeException runtimeException) {
-		return processingException(runtimeException);
-	}
+//	@ExceptionHandler(RuntimeException.class)
+//	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//	String runtimeExceptionHandler (RuntimeException runtimeException) {
+//		return processingException(runtimeException);
+//	}
 
 	private String processingException(Throwable e) {
 		log.error("===> Exception class: {}, message: {}.", e.getClass().getSimpleName(), e.getMessage());

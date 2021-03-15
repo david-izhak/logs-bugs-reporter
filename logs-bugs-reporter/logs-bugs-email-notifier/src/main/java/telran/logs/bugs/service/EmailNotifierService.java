@@ -10,12 +10,13 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
+import telran.logs.bugs.api.EmailProviderApi;
 import telran.logs.bugs.client.EmailProviderClient;
 import telran.logs.bugs.dto.LogDto;
 
 @Service
 @Slf4j
-public class EmailNotifierService {
+public class EmailNotifierService implements EmailProviderApi {
 
 	@Value("${app-email-notifier-subject:exception}")
 	String subject;
@@ -44,7 +45,7 @@ public class EmailNotifierService {
 		String email = emailClient.getEmailByArtifact(logDto.artifact);
 		log.debug(">>>> recievd email {} from repo", email);
 		MailTo recipient = MailTo.PROGRAMMER;
-		if (email.isEmpty()) {
+		if (email.equals(ANSWER_IF_APPROPRIATE_NO_EXISTS)) {
 			log.debug(">>>> recievd email is empty", email);
 			email = emailClient.getAssignerMail();
 			log.debug(">>>> recievd Assigner email {} from repo", email);

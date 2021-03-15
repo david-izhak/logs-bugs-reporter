@@ -5,5 +5,5 @@ public interface AssignerMailProviderApi {
 	String PATH_EMAIL_ASSIGNER = "/email/assigner";
 	
 //	String variables.
-	String DEFOULT_ASSIGNER_EMAIL = "fghdfdfhgf+assigner@gmail.com";
+	String DEFOULT_ASSIGNER_EMAIL = "etdfgd689+assigner@gmail.com";
 }

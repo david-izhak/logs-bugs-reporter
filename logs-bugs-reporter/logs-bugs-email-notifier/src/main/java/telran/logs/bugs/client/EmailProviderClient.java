@@ -18,7 +18,7 @@ public class EmailProviderClient {
 	String urlAssignerMail;
 	
 	@Value("${app-url-programmer-mail:xxx}")
-	String urlProgrammistMail;
+	String urlProgrammerMail;
 
 	public String getEmailByArtifact(String artifact) {
 		String res;
@@ -34,7 +34,7 @@ public class EmailProviderClient {
 	}
 	
 	private String getUrlProgrammist(String artifact) {
-		String res = urlProgrammistMail + "/email/" + artifact; //TODO move property to interface
+		String res = urlProgrammerMail + "/email/" + artifact; //TODO move property to interface
 		log.debug("URL for getting programmist email is {}", res);
 		return res;
 	}

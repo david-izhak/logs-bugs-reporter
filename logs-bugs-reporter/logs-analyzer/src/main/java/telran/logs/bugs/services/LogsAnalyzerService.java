@@ -45,15 +45,16 @@ public class LogsAnalyzerService {
 		Set<ConstraintViolation<LogDto>> violations = validator.validate(logDto);
 		final LogDto logForEach = logDto;
 		if (!violations.isEmpty()) {
-			violations.forEach(cv -> log.error("logDto : {}; field: {}; message: {}", logForEach, cv.getPropertyPath(),
+			violations.forEach(cv -> log.error("violations>>>> logDto : {}; field: {}; message: {}", logForEach, cv.getPropertyPath(),
 					cv.getMessage()));
 			logDto = new LogDto(new Date(), LogType.BAD_REQUEST_EXCEPTION, logsProviderArtifact, 0,
 					violations.toString());
 		}
 		if (logDto.logType != LogType.NO_EXCEPTION) {
 			streamBridge.send(bindingNameExceptions, logDto);
-			log.debug("log: {} sent to binding name: {}", logDto, bindingNameExceptions);
+			log.debug("exception>>>>> log: {} sent to binding name: {}", logDto, bindingNameExceptions);
 		}
 		streamBridge.send(bindingNameLogs, logDto);
+		log.debug("log>>>>> log: {} sent to binding name: {}", logDto, bindingNameLogs);
 	}
 }
