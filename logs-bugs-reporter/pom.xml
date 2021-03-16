@@ -17,9 +17,9 @@
 	<description>logs management and openning bugs from the exceptions</description>
 
 	<properties>
-		<java.version>14</java.version>
+		<java.version>15</java.version>
+		<spring-cloud.version>2020.0.1</spring-cloud.version>
 	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -58,11 +58,9 @@
 				<module>logs-random-generator</module>
 				<module>logs-bugs-reporter-back-office</module>
 				<module>logs-bugs-exceptions-handler</module>
+				<module>logs-initial-sql-populator-test</module>
+				<module>logs-bugs-discovery-server</module>
 			</modules>
 		</profile>
 	</profiles>
-
-	<modules>
-		<module>logs-initial-sql-populator-test</module>
-	</modules>
 </project>

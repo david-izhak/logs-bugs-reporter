@@ -39,9 +39,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<properties>
-		<java.version>14</java.version>
-	</properties>
 	<build>
 		<plugins>
 			<plugin>

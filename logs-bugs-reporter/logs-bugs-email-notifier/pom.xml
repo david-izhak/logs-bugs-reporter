@@ -8,10 +8,6 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>logs-bugs-email-notifier</artifactId>
-	<properties>
-		<java.version>14</java.version>
-		<spring-cloud.version>2020.0.1</spring-cloud.version>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>telran.logs.bugs</groupId>
@@ -46,6 +42,23 @@
 			<groupId>com.icegreen</groupId>
 			<artifactId>greenmail-junit5</artifactId>
 			<version>1.6.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

@@ -3,8 +3,8 @@ version: '3.8'
 services:
   analyzer:
     environment:
-      - password-karafka=${password-karafka}
-      - username-karafka=${username-karafka}
+      - PASSWORD_KARAFKA=${PASSWORD_KARAFKA}
+      - USERNAME_KARAFKA=${USERNAME_KARAFKA}
 #    deploy:
 #      resources:
 #        limits:
@@ -15,47 +15,68 @@ services:
 #          memory: 50M
     build: logs-analyzer
   programmer-email-provider:
-    ports:
-      - 8686:8686
     environment:
-      - postgres-username=${postgres-username}
-      - postgres-password=${postgres-password}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - EUREKA_SERVER=${EUREKA_SERVER}
+#      - EUREKA_SERVER=http://discovery-server:8761/eureka
+      - PORT=0
+#    networks:
+#    - backend-net
     build: logs-bugs-email-provider
   assigner-email-provider:
-    ports:
-      - 8585:8585
+    environment:
+      - EUREKA_SERVER=${EUREKA_SERVER}
+#      - EUREKA_SERVER=http://discovery-server:8761/eureka
+      - PORT=0
+#    networks:
+#    - backend-net
     build: logs-bugs-assigner-mail-provider
   email-notifier:
     environment:
-      - password-karafka=${password-karafka}
-      - username-karafka=${username-karafka}
-      - gmail-password=${gmail-password}
-      - gmail-username=${gmail-username}
+      - PASSWORD_KARAFKA=${PASSWORD_KARAFKA}
+      - USERNAME_KARAFKA=${USERNAME_KARAFKA}
+      - GMAIL_PASSWORD=${GMAIL_PASSWORd}
+      - GMAIL_USERNAME=${GMAIL_USERNAME}
+      - EUREKA_SERVER=${EUREKA_SERVER}
     build: logs-bugs-email-notifier
   bugs-opening:
     environment:
-      - password-karafka=${password-karafka}
-      - username-karafka=${username-karafka}
+      - PASSWORD_KARAFKA=${PASSWORD_KARAFKA}
+      - USERNAME_KARAFKA=${USERNAME_KARAFKA}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     build: logs-bugs-opening
   reporter-back-office:
     ports:
       - 8484:8484
     environment:
-      - postgres-username=${postgres-username}
-      - postgres-password=${postgres-password}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     build: logs-bugs-reporter-back-office
   db-populator:
     environment:
-      - password-karafka=${password-karafka}
-      - username-karafka=${username-karafka}
-      - mongo-username=${mongo-username}
-      - mongo-password=${mongo-password}
+      - PASSWORD_KARAFKA=${PASSWORD_KARAFKA}
+      - USERNAME_KARAFKA=${USERNAME_KARAFKA}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
     build: logs-db-populator
   logs-info-back-office:
     ports:
       - 8282:8282
     environment:
-      - mongo-username=${mongo-username}
-      - mongo-password=${mongo-password}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
     build: logs-info-back-office
+  discovery-server:
+    ports:
+      - 8761:8761
+    build: logs-bugs-discovery-server
+#    networks:
+#      backend-net:
+#        aliases:
+#          - "discovery"
     
+#networks:
+#  backend-net:
+#    driver: bridge

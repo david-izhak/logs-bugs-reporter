@@ -1,6 +1,6 @@
 package telran.logs.bugs.client;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -8,17 +8,16 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
+import telran.logs.bugs.LoadBalancer;
 
 @Component
 @Slf4j
 public class EmailProviderClient {
 	
-	RestTemplate restTemplate = new RestTemplate();
-	@Value("${app-url-assigner-mail:xxx}")
-	String urlAssignerMail;
+	@Autowired
+	LoadBalancer loadBalancer;
 	
-	@Value("${app-url-programmer-mail:xxx}")
-	String urlProgrammerMail;
+	RestTemplate restTemplate = new RestTemplate();
 
 	public String getEmailByArtifact(String artifact) {
 		String res;
@@ -34,6 +33,8 @@ public class EmailProviderClient {
 	}
 	
 	private String getUrlProgrammist(String artifact) {
+		String urlProgrammerMail = loadBalancer.getBaseUrl("email-provider");
+		log.debug("Recieved URL of a service that provides progammers' emails: {}", urlProgrammerMail);
 		String res = urlProgrammerMail + "/email/" + artifact; //TODO move property to interface
 		log.debug("URL for getting programmist email is {}", res);
 		return res;
@@ -53,6 +54,8 @@ public class EmailProviderClient {
 	}
 
 	private String getUrlAssigner() {
+		String urlAssignerMail = loadBalancer.getBaseUrl("assigner-mail-provider");
+		log.debug("Recieved URL of a service that provides assigner email: {}", urlAssignerMail);
 		String res = urlAssignerMail + "/email/assigner"; //TODO move property to interface
 		log.debug("URL for getting assigner email is {}", res);
 		return res;

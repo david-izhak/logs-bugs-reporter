@@ -224,7 +224,6 @@ public class BugsReporterImpl implements BugsReporter {
 	@Override
 	public List<Seriousness> getSeriousnessTypesWithMostBugs(int numberSeriousnessTypes) {
 		Pageable pageable = PageRequest.of(0, numberSeriousnessTypes); // Variant 2 - with JPQL
-		List<Seriousness> result = bugRepository.seriousnessTypesWithMostCountOfBugs(pageable);
 		return bugRepository.seriousnessTypesWithMostCountOfBugs(pageable);
 	}
 }

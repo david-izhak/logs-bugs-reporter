@@ -8,9 +8,6 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>logs-bugs-jpa-entities</artifactId>
-	<properties>
-		<java.version>14</java.version>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
