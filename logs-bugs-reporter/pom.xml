@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.2</version>
+		<version>2.4.3</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>telran.logs.bugs</groupId>
@@ -18,7 +18,7 @@
 
 	<properties>
 		<java.version>15</java.version>
-		<spring-cloud.version>2020.0.0</spring-cloud.version>
+		<spring-cloud.version>2020.0.1</spring-cloud.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -34,7 +34,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -60,8 +59,8 @@
 				<module>logs-bugs-exceptions-handler</module>
 				<module>logs-initial-sql-populator-test</module>
 				<module>logs-bugs-discovery-server</module>
+				<module>logs-bugs-gateway</module>
 			</modules>
 		</profile>
 	</profiles>
-
 </project>
