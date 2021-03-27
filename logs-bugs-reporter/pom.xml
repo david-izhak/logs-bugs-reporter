@@ -63,4 +63,7 @@
 			</modules>
 		</profile>
 	</profiles>
+	<modules>
+		<module>logs-bugs-accounts-provider</module>
+	</modules>
 </project>
