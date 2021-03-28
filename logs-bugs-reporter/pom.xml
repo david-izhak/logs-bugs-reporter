@@ -59,10 +59,8 @@
 				<module>logs-initial-sql-populator-test</module>
 				<module>logs-bugs-discovery-server</module>
 				<module>logs-bugs-gateway</module>
+				<module>logs-bugs-accounts-provider</module>
 			</modules>
 		</profile>
 	</profiles>
-	<modules>
-		<module>logs-bugs-accounts-provider</module>
-	</modules>
 </project>
