@@ -15,10 +15,9 @@
 	<packaging>pom</packaging>
 	<name>logs-bugs-reporter</name>
 	<description>logs management and openning bugs from the exceptions</description>
-
 	<properties>
-		<java.version>15</java.version>
-		<spring-cloud.version>2020.0.1</spring-cloud.version>
+		<java.version>16</java.version>
+		<spring-cloud.version>2020.0.2</spring-cloud.version>
 	</properties>
 	<dependencies>
 		<dependency>
