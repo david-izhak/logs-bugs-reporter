@@ -1,5 +1,7 @@
 package telran.logs.bugs.client;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +36,7 @@ public class EmailProviderClient {
 	
 	private String getUrlProgrammist(String artifact) {
 		String urlProgrammerMail = loadBalancer.getBaseUrl("email-provider");
-		log.debug("Recieved URL of a service that provides progammers' emails: {}", urlProgrammerMail);
+		log.debug(">>>> EmailProviderClient > getUrlProgrammist > Recieved URL of a service that provides progammers' emails: {}", urlProgrammerMail);
 		String res = urlProgrammerMail + "/email/" + artifact; //TODO move property to interface
 		log.debug("URL for getting programmist email is {}", res);
 		return res;

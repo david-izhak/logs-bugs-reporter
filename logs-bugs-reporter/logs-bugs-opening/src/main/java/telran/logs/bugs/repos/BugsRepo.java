@@ -1,5 +1,4 @@
-package telran.logs.bugs;
-
+package telran.logs.bugs.repos;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

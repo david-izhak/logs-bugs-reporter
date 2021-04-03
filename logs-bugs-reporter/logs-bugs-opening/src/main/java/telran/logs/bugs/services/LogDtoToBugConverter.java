@@ -6,16 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import lombok.extern.slf4j.Slf4j;
-import telran.logs.bugs.ArtifactsRepo;
-import telran.logs.bugs.BugsRepo;
 import telran.logs.bugs.dto.BugStatus;
 import telran.logs.bugs.dto.LogDto;
 import telran.logs.bugs.dto.LogType;
 import telran.logs.bugs.dto.OpeningMethod;
 import telran.logs.bugs.dto.Seriousness;
+import telran.logs.bugs.interfaces.LogDtoToBugConverterInterface;
 import telran.logs.bugs.jpa.entities.Artifact;
 import telran.logs.bugs.jpa.entities.Bug;
 import telran.logs.bugs.jpa.entities.Programmer;
+import telran.logs.bugs.repos.ArtifactsRepo;
+import telran.logs.bugs.repos.BugsRepo;
 
 @Controller
 @Slf4j
@@ -55,15 +56,7 @@ public class LogDtoToBugConverter implements LogDtoToBugConverterInterface {
 	}
 
 	public BugStatus getBugStatus(Programmer programmer) {
-		return programmer != null ? BugStatus.ASSIGNED : BugStatus.OPENND; // short variant (no logging)
-		
-		// long variant with logging
-//		if (programmer != null) {
-//			log.debug(">>>> return BugStatus.ASSIGNED");
-//			return BugStatus.ASSIGNED;
-//		}
-//		log.debug(">>>> return BugStatus.OPENND");
-//		return BugStatus.OPENND;
+		return programmer != null ? BugStatus.ASSIGNED : BugStatus.OPENND;
 	}
 
 	public Seriousness getSeriousness(LogType logType) {
@@ -84,16 +77,6 @@ public class LogDtoToBugConverter implements LogDtoToBugConverterInterface {
 
 	public Programmer getProgrammer(String artifact) {
 		Artifact artifactEntity = artifacts.findById(artifact).orElse(null);
-		return artifactEntity == null ? null : artifactEntity.getProgrammer(); // short variant (no logging)
-
-		// long variant with logging
-//		if (artifactEntity == null) {
-//			log.debug(">>>> No Programmer, return null");
-//			return null;
-//		}
-//		log.debug(">>>> Artifact is found {}", artifactEntity);
-//		Programmer programmer = artifactEntity.getProgrammer();
-//		log.debug(">>>> From Artifact got Programmer {}", programmer);
-//		return programmer;
+		return artifactEntity == null ? null : artifactEntity.getProgrammer();
 	}
 }

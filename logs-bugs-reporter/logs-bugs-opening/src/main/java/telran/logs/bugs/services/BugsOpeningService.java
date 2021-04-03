@@ -12,10 +12,11 @@ import telran.logs.bugs.dto.LogDto;
 public class BugsOpeningService {
 	
 	@Autowired
-	LogDtoToBugConverterInterface controller;
-
+	LogDtoToBugConverter logDtoToBugConverter;
+	
 	@Bean
 	public Consumer<LogDto> getLogDtoConsumer() {
-		return controller::takeLogDtoAndOpenBug;
+		return logDtoToBugConverter::takeLogDtoAndOpenBug;
 	}
+	
 }

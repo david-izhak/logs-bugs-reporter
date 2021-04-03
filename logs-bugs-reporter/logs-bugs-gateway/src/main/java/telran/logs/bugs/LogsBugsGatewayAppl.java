@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.log4j.Log4j2;
@@ -46,7 +47,7 @@ public class LogsBugsGatewayAppl {
 			String baseUrl = String.format("http://%s:%s", isLocalHost?"localhost":serviceName, port);
 			mapServices.put(serviceName, baseUrl);
 		});
-		log.debug("mapServices: {}", mapServices);
+		log.debug(">>>> LogsBugsGatewayAppl > fillMapServices: mapServices: {}", mapServices);
 	}
 	
 	@PostMapping("/**")
@@ -61,22 +62,32 @@ public class LogsBugsGatewayAppl {
 	@GetMapping("/**")
 	public Mono<ResponseEntity<byte[]>> getRequestProxy(ProxyExchange<byte[]> proxy, ServerHttpRequest request){
 		String proxiedUri = getProxiedUri(request);
+		log.debug(">>>> LogsBugsGatewayAppl > getRequestProxy > proxiedUri: {}", proxiedUri);
 		if(proxiedUri == null) {
 			return Mono.just(ResponseEntity.status(404).body("Service not found".getBytes()));
 		}
 		return proxy.uri(proxiedUri).get();
 	}
+	
+	@PutMapping("/**")
+	public Mono<ResponseEntity<byte[]>> putRequestProxy(ProxyExchange<byte[]> proxy, ServerHttpRequest request){
+		String proxiedUri = getProxiedUri(request);
+		if(proxiedUri == null) {
+			return Mono.just(ResponseEntity.status(404).body("Service not found".getBytes()));
+		}
+		return proxy.uri(proxiedUri).put();
+	}
 
 	private String getProxiedUri(ServerHttpRequest request) {
 		String uri = request.getURI().toString();
-		log.debug("received request: ", uri);
+		log.debug("received request: {}", uri);
 		String serviceName = uri.split("/+")[2];
 		log.debug("serviceName: {}", serviceName);
 		String res = mapServices.get(serviceName);
 		if(res != null) {
 			int indexService = uri.indexOf(serviceName) + serviceName.length();
 			res += uri.substring(indexService);
-			log.debug("res: {}", res);
+			log.debug(">>>> LogsBugsGatewayAppl > getProxiedUriserviceName > res: {}", res);
 		}
 		return res;
 	}

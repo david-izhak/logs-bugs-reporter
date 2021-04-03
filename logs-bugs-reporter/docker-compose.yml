@@ -19,7 +19,6 @@ services:
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - EUREKA_SERVER=${EUREKA_SERVER}
-#      - EUREKA_SERVER=http://discovery-server:8761/eureka
       - PORT=0
 #    networks:
 #    - backend-net
@@ -27,10 +26,7 @@ services:
   assigner-email-provider:
     environment:
       - EUREKA_SERVER=${EUREKA_SERVER}
-#      - EUREKA_SERVER=http://discovery-server:8761/eureka
       - PORT=0
-#    networks:
-#    - backend-net
     build: logs-bugs-assigner-mail-provider
   email-notifier:
     environment:
@@ -48,8 +44,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     build: logs-bugs-opening
   reporter-back-office:
-    ports:
-      - 8484:8484
+#    ports:
+#      - 8484:8484
     environment:
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -62,8 +58,8 @@ services:
       - MONGO_PASSWORD=${MONGO_PASSWORD}
     build: logs-db-populator
   logs-info-back-office:
-    ports:
-      - 8282:8282
+#    ports:
+#      - 8282:8282
     environment:
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
@@ -76,7 +72,23 @@ services:
 #      backend-net:
 #        aliases:
 #          - "discovery"
+
+  accounts-provider:
+    environment:
+      - PORT=0
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - EUREKA_SERVER=${EUREKA_SERVER}
+    build: logs-bugs-accounts-provider
     
+  gateway:
+    ports:
+      - 9191:9191
+    environment:
+      - EUREKA_SERVER=${EUREKA_SERVER}
+      - SPRING_PROFILES_ACTIVE=docker
+    build: logs-bugs-gateway    
+  
 #networks:
 #  backend-net:
 #    driver: bridge

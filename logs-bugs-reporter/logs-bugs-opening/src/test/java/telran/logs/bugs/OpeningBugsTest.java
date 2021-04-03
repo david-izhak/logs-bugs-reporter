@@ -24,7 +24,10 @@ import telran.logs.bugs.dto.Seriousness;
 import telran.logs.bugs.jpa.entities.Artifact;
 import telran.logs.bugs.jpa.entities.Bug;
 import telran.logs.bugs.jpa.entities.Programmer;
-import telran.logs.bugs.services.LogDtoToBugConverterInterface;
+import telran.logs.bugs.repos.ArtifactsRepo;
+import telran.logs.bugs.repos.BugsRepo;
+import telran.logs.bugs.repos.ProgrammersRepo;
+import telran.logs.bugs.services.BugsOpeningService;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -43,7 +46,7 @@ class OpeningBugsTest {
 	BugsRepo bugs;
 	
 	@Autowired
-	LogDtoToBugConverterInterface bugsOpeningService;
+	BugsOpeningService bugsOpeningService;
 	
 	@Autowired
 	InputDestination input;

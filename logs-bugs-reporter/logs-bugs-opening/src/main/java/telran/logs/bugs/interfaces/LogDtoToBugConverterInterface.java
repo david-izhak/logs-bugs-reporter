@@ -1,4 +1,4 @@
-package telran.logs.bugs.services;
+package telran.logs.bugs.interfaces;
 
 import java.time.LocalDate;
 

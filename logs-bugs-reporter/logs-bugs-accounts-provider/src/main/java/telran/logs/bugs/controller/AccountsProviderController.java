@@ -18,7 +18,7 @@ public class AccountsProviderController {
 	@Autowired
 	AccountRepository aAccountRepository;
 	
-	@GetMapping(value="/active_accounts", produces="application/stream+json")
+	@GetMapping(value="/active_accounts", produces="application/json")
 	Flux<AccountDoc> getAllLogs() {
 		Flux<AccountDoc> result = aAccountRepository.findByExpirationTimestampGreaterThan(Instant.now().getEpochSecond());
 		log.debug("Logs sent to a client");

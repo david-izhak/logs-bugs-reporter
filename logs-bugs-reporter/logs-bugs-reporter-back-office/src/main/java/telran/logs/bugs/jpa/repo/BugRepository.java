@@ -27,7 +27,7 @@ public interface BugRepository extends JpaRepository<Bug, Long> {
 //	@Query(value = "select name from programmer p left join bugs b on p.id=programmer_id group by name order by count(b.*) desc limit :nProgrammer", nativeQuery = true)
 //	List<String> programmersMostBugs(int nProgrammer);
 //	Variant 2 - with JPQL
-	@Query(value = "SELECT programmer.name as name FROM Bug b GROUP BY programmer ORDER BY COUNT(b) DESC, name ASC")
+	@Query(value = "SELECT programmer.name as name FROM Bug b GROUP BY name ORDER BY COUNT(b) DESC, name ASC")
 	List<String> programmersMostBugs(Pageable pageable);
 
 //	Variant 1 - with native query
