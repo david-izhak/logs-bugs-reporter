@@ -84,7 +84,7 @@ public class SecurityConfiguration {
 	}
 
 	private ConcurrentMap<String, UserDetails> getConcurrentMapFromListAccountDoc() {
-		List<AccountDoc> list = accountsProviderClient.getAccounts();
+		List<AccountDoc> list = accountsProviderClient.getAccountsDoc();
 		log.debug(">>>> SecurityConfiguration > getMapDetailse: get list of AccountDoc from repo: {}", list);
 		return list.stream()
 				.map(account -> new User(account.getUserName(), account.getPassword(),

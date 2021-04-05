@@ -42,7 +42,7 @@ public class AccountsProviderClient {
 		List <AccountDoc> res;
 		try {
 			log.debug(">>>> AccountsProviderClient > getAccounts: try to receav responseEntity from AccountsProvider");
-			ResponseEntity<List <AccountDoc>> responseEntity = restTemplate.exchange(urlAccountsProvider, HttpMethod.GET, null, new ParameterizedTypeReference<List<AccountDoc>>(){});
+			ResponseEntity<List <AccountDoc>> responseEntity = restTemplate.exchange(urlAccountsProvider + "/active_accounts", HttpMethod.GET, null, new ParameterizedTypeReference<List<AccountDoc>>(){});
 			log.debug(">>>> AccountsProviderClient > getAccounts: receaved responseEntity {}", responseEntity);
 			res = responseEntity.getBody();
 			log.debug(">>>> AccountsProviderClient > getAccounts: receaved list {}", res);
@@ -69,6 +69,7 @@ public class AccountsProviderClient {
 	@PostConstruct
 	void setAccounts() {
 		urlAccountsProvider = getUrlAccountsProvider();
+		log.debug(">>>> AccountsProviderClient > setAccounts: {}", urlAccountsProvider);
 		accounts = getAccounts();
 	}
 }

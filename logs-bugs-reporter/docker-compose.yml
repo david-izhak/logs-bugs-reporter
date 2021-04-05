@@ -5,14 +5,6 @@ services:
     environment:
       - PASSWORD_KARAFKA=${PASSWORD_KARAFKA}
       - USERNAME_KARAFKA=${USERNAME_KARAFKA}
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.001'
-#          memory: 300M
-#        reservations:
-#          cpus: '0.0001'
-#          memory: 50M
     build: logs-analyzer
   programmer-email-provider:
     environment:
@@ -20,8 +12,6 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - EUREKA_SERVER=${EUREKA_SERVER}
       - PORT=0
-#    networks:
-#    - backend-net
     build: logs-bugs-email-provider
   assigner-email-provider:
     environment:
@@ -44,8 +34,6 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     build: logs-bugs-opening
   reporter-back-office:
-#    ports:
-#      - 8484:8484
     environment:
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -58,8 +46,6 @@ services:
       - MONGO_PASSWORD=${MONGO_PASSWORD}
     build: logs-db-populator
   logs-info-back-office:
-#    ports:
-#      - 8282:8282
     environment:
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
@@ -68,11 +54,6 @@ services:
     ports:
       - 8761:8761
     build: logs-bugs-discovery-server
-#    networks:
-#      backend-net:
-#        aliases:
-#          - "discovery"
-
   accounts-provider:
     environment:
       - PORT=0
@@ -80,7 +61,6 @@ services:
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - EUREKA_SERVER=${EUREKA_SERVER}
     build: logs-bugs-accounts-provider
-    
   gateway:
     ports:
       - 9191:9191
@@ -88,7 +68,3 @@ services:
       - EUREKA_SERVER=${EUREKA_SERVER}
       - SPRING_PROFILES_ACTIVE=docker
     build: logs-bugs-gateway    
-  
-#networks:
-#  backend-net:
-#    driver: bridge

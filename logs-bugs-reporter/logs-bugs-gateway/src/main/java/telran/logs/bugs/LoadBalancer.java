@@ -27,6 +27,14 @@ public class LoadBalancer {
 		Flux<Response<ServiceInstance>> chosen = Flux.from(publisher);
 		ServiceInstance instance = chosen.blockFirst().getServer();
 		log.debug(">>>> LoadBalancer > getBaseUrl: instance {}", instance);
-		return instance.getUri().toString();
+		String uri = instance.getUri().toString();
+		log.debug(">>>> LoadBalancer > getBaseUrl: uri from ServiceInstance {}", uri);
+		String host = instance.getHost().toString();
+		log.debug(">>>> LoadBalancer > getBaseUrl: getHost from ServiceInstance {}", host);
+		String serviceId = instance.getServiceId().toString();
+		log.debug(">>>> LoadBalancer > getBaseUrl: serviceId from ServiceInstance {}", serviceId);
+		int port = instance.getPort();
+		log.debug(">>>> LoadBalancer > getBaseUrl: port from ServiceInstance {}", port);
+		return "http://accounts-provider:" + port;
 	}
 }
