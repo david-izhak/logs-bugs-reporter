@@ -60,6 +60,8 @@
 				<module>logs-bugs-discovery-server</module>
 				<module>logs-bugs-gateway</module>
 				<module>logs-bugs-accounts-provider</module>
+				<module>logs-bugs-mongo-account-doc</module>
+				<module>logs-bugs-configuration-managment</module>
 			</modules>
 		</profile>
 	</profiles>

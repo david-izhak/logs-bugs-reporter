@@ -1,0 +1,20 @@
+logging.level.telran=debug
+logging.level.org=warn
+logging.level.de=warn
+####################################################
+#Configurationworking with JPA Postresql
+spring.datasource.url=jdbc:postgresql://ec2-54-72-155-238.eu-west-1.compute.amazonaws.com:5432/d1777g4vijli3n
+spring.datasource.username=npuzrpbbsxugdx
+spring.datasource.password=6dd3f03aca13b196db1889db15aaafc9019d0fbbb87308310b90830942cbe631
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQL9Dialect
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults= false
+spring.datasource.initialization-mode=always
+spring.jpa.hibernate.ddl-auto=create
+########################################
+app-do-populate=true
+app-emai-prefix=etdfgd689
+app-emai-postfix=@gmail.com
+app-programmers-number=17
+app-initial-programmer-id=100
+app-artifacts=class1,class2,class3,class4,class5,class6,class7,class8,class9,class10,class11,class12,class13,class14,class15,class16,class17,class18,class19,class20,authentication,authorization

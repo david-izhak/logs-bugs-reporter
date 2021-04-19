@@ -1,3 +1,4 @@
+// FIXME test not works
 package telran.logs.bugs;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,6 +58,15 @@ public class LogsAnalyzerTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	void context() {
+		assertNotNull(producer);
+		assertNotNull(consumer);
+		assertNotNull(bindingNameExceptions);
+		assertNotNull(bindingNameLogs);
+		assertNotNull(logsProviderArtifact);
 	}
 	
 	@Test

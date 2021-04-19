@@ -1,4 +1,4 @@
-package telran.logs.bugs;
+package telran.logs.bugs.security;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
@@ -22,14 +24,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.context.ServerSecurityContextRepository;
 
 import lombok.extern.log4j.Log4j2;
 import telran.logs.bugs.api.ApiConstants;
-import telran.logs.bugs.mongo.documents.AccountDoc;
+import telran.logs.bugs.AccountsProviderClient;
+import telran.logs.bugs.accounting.mongo.documents.AccountDoc;
 
 @Configuration
 @Log4j2
 //@EnableWebSecurity(debug = true)
+//@EnableReactiveMethodSecurity // To enable PreAuthorize
 public class SecurityConfiguration {
 
 	@Value("${security.enable}")
@@ -45,6 +50,12 @@ public class SecurityConfiguration {
 	
 	@Autowired
 	AccountsProviderClient accountsProviderClient;
+	
+	@Autowired
+	private ReactiveAuthenticationManager authenticator;
+	
+	@Autowired
+	private ServerSecurityContextRepository securityContext;
 
 	@Bean
 	PasswordEncoder getPasswordEncoder() {
@@ -101,7 +112,15 @@ public class SecurityConfiguration {
 			log.debug(">>>> SecurityConfiguration: set security to disable");
 			return filterChain;
 		}
-		SecurityWebFilterChain filterChain = httpSecurity.csrf().disable().httpBasic().and().authorizeExchange()
+		SecurityWebFilterChain filterChain = httpSecurity
+				.csrf().disable()
+				.httpBasic().disable()
+				.cors().disable()
+				.authenticationManager(authenticator)
+				.securityContextRepository(securityContext)
+				.authorizeExchange()
+				.pathMatchers("/login").permitAll()
+				.and().authorizeExchange()
 				// Access to the information about all logs.
 				.pathMatchers("/logs-info-back-office/**").hasRole(ApiConstants.DEVELOPER)
 				// Opening bugs, as with assignment as well as without

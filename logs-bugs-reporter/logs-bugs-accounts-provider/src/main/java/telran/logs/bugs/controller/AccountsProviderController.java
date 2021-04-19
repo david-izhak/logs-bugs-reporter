@@ -16,13 +16,12 @@ import telran.logs.bugs.accounting.mongo.repo.AccountRepository;
 public class AccountsProviderController {
 	
 	@Autowired
-	AccountRepository aAccountRepository;
+	AccountRepository accountRepository;
 	
 	@GetMapping(value="/active_accounts", produces="application/json")
 	Flux<AccountDoc> getAllLogs() {
-		Flux<AccountDoc> result = aAccountRepository.findByExpirationTimestampGreaterThan(Instant.now().getEpochSecond());
-		log.debug("Logs sent to a client");
+		Flux<AccountDoc> result = accountRepository.findByExpirationTimestampGreaterThan(Instant.now().getEpochSecond());
+		log.debug(">>> AccountsProviderController >> getAllLogs: Logs sent to a client: {}", result);
 		return result;
 	}
-
 }

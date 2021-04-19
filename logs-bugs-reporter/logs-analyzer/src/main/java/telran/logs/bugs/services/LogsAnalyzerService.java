@@ -21,11 +21,11 @@ import telran.logs.bugs.dto.LogType;
 @Slf4j
 public class LogsAnalyzerService {
 
-	@Value("${app-binding-name-exceptions:exceptions-out-0}")
+	@Value("${app-binding-name-exceptions}")
 	String bindingNameExceptions;
-	@Value("${app-binding-name-logs:logs-out-0}")
+	@Value("${app-binding-name-logs}")
 	String bindingNameLogs;
-	@Value("${app-logs-provider-artifact:logs-provider}")
+	@Value("${app-logs-provider-artifact}")
 	String logsProviderArtifact;
 
 	@Autowired

@@ -1,6 +1,7 @@
 package telran.logs.bugs;
 
 import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.Response;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactiveLoadBalancer;
@@ -12,29 +13,32 @@ import reactor.core.publisher.Flux;
 @Component
 @Log4j2
 public class LoadBalancer {
-	
+
+	@Autowired
 	ReactiveLoadBalancer.Factory<ServiceInstance> loadBalancerFactory;
-	public LoadBalancer(ReactiveLoadBalancer.Factory<ServiceInstance> loadBalancerFactory) {
-		log.debug(">>>> LoadBalancer > constructor");
-		this.loadBalancerFactory = loadBalancerFactory;
-	}
+
 	public String getBaseUrl(String serviceName) {
-		log.debug(">>>> LoadBalancer > getBaseUrl: received serviceName: {}", serviceName);
-		log.debug(">>>> LoadBalancer > getBaseUrl: start method");
 		ReactiveLoadBalancer<ServiceInstance> rlb = loadBalancerFactory.getInstance(serviceName);
-		log.debug(">>>> LoadBalancer > getBaseUrl: rlb {}", rlb);
 		Publisher<Response<ServiceInstance>> publisher = rlb.choose();
 		Flux<Response<ServiceInstance>> chosen = Flux.from(publisher);
-		ServiceInstance instance = chosen.blockFirst().getServer();
-		log.debug(">>>> LoadBalancer > getBaseUrl: instance {}", instance);
+		Response<ServiceInstance> response = chosen.blockFirst();
+		while (response == null) {
+			log.debug(">>> LoadBalancer >> getBaseUrl: There is no an answer from discovery service. Response null.");
+			response = chosen.blockFirst();
+			try {
+				log.debug(">>> LoadBalancer >> getBaseUrl: Waiting 10 sec.");
+				Thread.sleep(10000);
+				log.debug(">>> LoadBalancer >> getBaseUrl: Next attempt to receive an answer from discovery service.");
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		ServiceInstance instance = response.getServer();
 		String uri = instance.getUri().toString();
-		log.debug(">>>> LoadBalancer > getBaseUrl: uri from ServiceInstance {}", uri);
 		String host = instance.getHost().toString();
-		log.debug(">>>> LoadBalancer > getBaseUrl: getHost from ServiceInstance {}", host);
 		String serviceId = instance.getServiceId().toString();
-		log.debug(">>>> LoadBalancer > getBaseUrl: serviceId from ServiceInstance {}", serviceId);
 		int port = instance.getPort();
-		log.debug(">>>> LoadBalancer > getBaseUrl: port from ServiceInstance {}", port);
 		return "http://accounts-provider:" + port;
 	}
 }

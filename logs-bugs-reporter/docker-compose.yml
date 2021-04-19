@@ -5,6 +5,7 @@ services:
     environment:
       - PASSWORD_KARAFKA=${PASSWORD_KARAFKA}
       - USERNAME_KARAFKA=${USERNAME_KARAFKA}
+      - SPRING_PROFILES_ACTIVE=${ACTIVE_PROFILE}
     build: logs-analyzer
   programmer-email-provider:
     environment:
@@ -66,5 +67,9 @@ services:
       - 9191:9191
     environment:
       - EUREKA_SERVER=${EUREKA_SERVER}
-      - SPRING_PROFILES_ACTIVE=docker
-    build: logs-bugs-gateway    
+      - SPRING_PROFILES_ACTIVE=${ACTIVE_PROFILE}
+    build: logs-bugs-gateway
+  configuration-managment:
+    environment:
+      - GITHUB-PASSWORD=${GITHUB-PASSWORD}
+    build: logs-bugs-configuration-managment
