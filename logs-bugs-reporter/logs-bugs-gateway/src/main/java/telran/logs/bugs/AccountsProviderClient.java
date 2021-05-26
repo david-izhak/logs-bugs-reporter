@@ -26,8 +26,20 @@ public class AccountsProviderClient {
 	@Value("${test.mod}")
 	boolean testMod;
 
-	private static final String ACCOUNTS_PROVIDER = "accounts-provider";
-	private static final String LOCALHOST = "http://localhost:8787";
+	@Value("${accounts.provider}")
+	private String accountsProvider;
+	
+	@Value("${localhost}")
+	private String localhost;
+	
+	@Value("${waiting.time}")
+	private int waitingTime;
+	
+	@Value("${attempts.number}")
+	private int attemptsNumber;
+	
+	@Value("${spring.profiles.active}")
+	String springProfilesActive;
 
 	@Autowired
 	LoadBalancer loadBalancer;
@@ -38,9 +50,6 @@ public class AccountsProviderClient {
 		return accounts;
 	}
 
-	@Value("${spring.profiles.active}")
-	String springProfilesActive;
-
 	RestTemplate restTemplate = new RestTemplate();
 
 	String urlAccountsProvider = null;
@@ -49,7 +58,7 @@ public class AccountsProviderClient {
 		log.debug(">>>> AccountsProviderClient > getAccounts: start method.");
 		log.debug(">>>> AccountsProviderClient > getAccounts: check springProfilesActive: {}", springProfilesActive);
 		List<AccountDoc> res = null;
-//		restTemplate.getInterceptors().add(
+//		restTemplate.getInterceptors().add( 
 //				  new BasicAuthenticationInterceptor("user1", "11111111"));
 		try {
 			log.debug(">>>> AccountsProviderClient > getAccounts: try to receav responseEntity from AccountsProvider");
@@ -61,11 +70,11 @@ public class AccountsProviderClient {
 			} catch (Exception e) {
 				log.error("Error: {}", e.getMessage());
 			}
-			for (int i = 0; i < 5 && responseEntity == null && !testMod; i++) {
+			for (int i = 0; i < attemptsNumber && responseEntity == null && !testMod; i++) {
 				log.debug(">>> AccountsProviderClient >> getAccounts: There is no an answer from accounts-provider, responseEntity null.");
 				try {
-					log.debug(">>> AccountsProviderClient >> getAccounts: Waiting 10 sec.");
-					Thread.sleep(5000);
+					log.debug(">>> AccountsProviderClient >> getAccounts: Waiting " + waitingTime + " millis.");
+					Thread.sleep(waitingTime);
 					log.debug(
 							">>> AccountsProviderClient >> getAccounts: Next attempt to receive an answer from accounts-provider.");
 				} catch (InterruptedException e) {
@@ -93,10 +102,10 @@ public class AccountsProviderClient {
 
 	private String getUrlAccountsProvider() {
 		if (springProfilesActive.equals("dev")) {
-			return LOCALHOST;
+			return localhost;
 		}
 		log.debug(">>>> AccountsProviderClient > getUrlAccountsProvider: start method");
-		String baseUrl = loadBalancer.getBaseUrl(ACCOUNTS_PROVIDER);
+		String baseUrl = loadBalancer.getBaseUrl(accountsProvider);
 		log.debug(
 				">>>> AccountsProviderClient > getUrlAccountsProvider: Recieved URL of a service that provides accounts: {}",
 				baseUrl);
