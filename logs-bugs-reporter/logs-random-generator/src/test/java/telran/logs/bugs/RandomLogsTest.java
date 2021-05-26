@@ -48,7 +48,6 @@ public class RandomLogsTest {
 				break;
 			default:
 				testClassArtifact(v);
-			
 			}
 		});
 	}
@@ -63,6 +62,7 @@ public class RandomLogsTest {
 				(EnumMap<LogType, String>) getMapMethod.invoke(randomLogs);
 		return logTypeArtifactsMap;
 	}
+	
 	@Test
 	void generation() throws Exception{
 		
@@ -99,7 +99,6 @@ public class RandomLogsTest {
 			default:
 				testNonSecException(log);
 				break;
-			
 			}
 		});
 	}

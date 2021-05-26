@@ -27,7 +27,7 @@ public class CustomSecurityContext implements ServerSecurityContextRepository {
 	public Mono<SecurityContext> load(ServerWebExchange exchange) {
 		String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 		if(authHeader == null || !authHeader.startsWith("Bearer")) {
-			return Mono.empty();  // no issue if security configuration contains pe
+			return Mono.empty();  // no issue if security configuration contains...
 		}
 		String authToken = authHeader.substring(7);
 		Mono<SecurityContext> res = authenticator.authenticate(new UsernamePasswordAuthenticationToken(authToken, authToken)).map(SecurityContextImpl::new);

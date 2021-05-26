@@ -6,6 +6,7 @@ services:
       - PASSWORD_KARAFKA=${PASSWORD_KARAFKA}
       - USERNAME_KARAFKA=${USERNAME_KARAFKA}
       - SPRING_PROFILES_ACTIVE=${ACTIVE_PROFILE}
+      - CONFIGSERVER_NAME=${CONFIGSERVER_NAME}
     build: logs-analyzer
   programmer-email-provider:
     environment:
@@ -13,11 +14,13 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - EUREKA_SERVER=${EUREKA_SERVER}
       - PORT=0
+      - CONFIGSERVER_NAME=${CONFIGSERVER_NAME}
     build: logs-bugs-email-provider
   assigner-email-provider:
     environment:
       - EUREKA_SERVER=${EUREKA_SERVER}
       - PORT=0
+      - CONFIGSERVER_NAME=${CONFIGSERVER_NAME}
     build: logs-bugs-assigner-mail-provider
   email-notifier:
     environment:
@@ -26,6 +29,7 @@ services:
       - GMAIL_PASSWORD=${GMAIL_PASSWORd}
       - GMAIL_USERNAME=${GMAIL_USERNAME}
       - EUREKA_SERVER=${EUREKA_SERVER}
+      - CONFIGSERVER_NAME=${CONFIGSERVER_NAME}
     build: logs-bugs-email-notifier
   bugs-opening:
     environment:
@@ -33,6 +37,7 @@ services:
       - USERNAME_KARAFKA=${USERNAME_KARAFKA}
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CONFIGSERVER_NAME=${CONFIGSERVER_NAME}
     build: logs-bugs-opening
   reporter-back-office:
     environment:
@@ -45,13 +50,17 @@ services:
       - USERNAME_KARAFKA=${USERNAME_KARAFKA}
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - CONFIGSERVER_NAME=${CONFIGSERVER_NAME}
     build: logs-db-populator
   logs-info-back-office:
     environment:
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - CONFIGSERVER_NAME=${CONFIGSERVER_NAME}
     build: logs-info-back-office
   discovery-server:
+    environment:
+      - CONFIGSERVER_NAME=${CONFIGSERVER_NAME}
     ports:
       - 8761:8761
     build: logs-bugs-discovery-server
@@ -61,6 +70,7 @@ services:
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - EUREKA_SERVER=${EUREKA_SERVER}
+      - CONFIGSERVER_NAME=${CONFIGSERVER_NAME}
     build: logs-bugs-accounts-provider
   gateway:
     ports:
@@ -68,6 +78,7 @@ services:
     environment:
       - EUREKA_SERVER=${EUREKA_SERVER}
       - SPRING_PROFILES_ACTIVE=${ACTIVE_PROFILE}
+      - CONFIGSERVER_NAME=${CONFIGSERVER_NAME}
     build: logs-bugs-gateway
   configuration-managment:
     environment:
