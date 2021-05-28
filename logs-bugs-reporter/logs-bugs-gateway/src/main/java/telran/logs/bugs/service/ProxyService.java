@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.webflux.ProxyExchange;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -37,7 +38,7 @@ public class ProxyService {
 			int indexService = uri.indexOf(serviceName) + serviceName.length();
 			res += uri.substring(indexService);
 			log.debug(">>>> LogsBugsGatewayAppl > getProxiedUriserviceName > res: {}", res);
-			switch (request.getMethod()) {
+			switch (getMethodType(request)) {
 			case POST:
 				return proxy.uri(res).post();
 			case GET:
@@ -47,10 +48,15 @@ public class ProxyService {
 			case DELETE:
 				return proxy.uri(res).delete();
 			default:
-				return Mono.just(ResponseEntity.status(600).body("Bad request".getBytes()));
+				return Mono.just(ResponseEntity.status(500).body("Bad request".getBytes()));
 			}
 		}
 		return Mono.just(ResponseEntity.status(404).body("Service not found".getBytes()));
+	}
+
+	private HttpMethod getMethodType(ServerHttpRequest request) {
+		HttpMethod method = request.getMethod();
+		return method != null ? method : HttpMethod.OPTIONS;
 	}
 	
 	@PostConstruct

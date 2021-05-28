@@ -81,4 +81,7 @@
 			</modules>
 		</profile>
 	</profiles>
+	<modules>
+		<module>logs-bugs-load-balancer</module>
+	</modules>
 </project>
